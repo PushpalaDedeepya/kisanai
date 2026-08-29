@@ -2,9 +2,10 @@
 // KISAN AI - FRONTEND CLIENT JAVASCRIPT
 // ==============================================================================
 
-const API_BASE = window.location.protocol.startsWith("http")
-    ? window.location.origin
-    : "http://127.0.0.1:8000";
+const isDifferentDevPort = (window.location.port && window.location.port !== "8000" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
+const API_BASE = (!window.location.protocol.startsWith("http") || isDifferentDevPort)
+    ? "http://127.0.0.1:8000"
+    : window.location.origin;
 
 let sessionId = "session-" + Math.random().toString(36).substring(2, 9);
 let currentSelectedLanguage = "Telugu";
