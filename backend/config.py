@@ -19,9 +19,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
 
-HOST = os.getenv("HOST", "127.0.0.1")
-PORT = int(os.getenv("PORT", "8000"))
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+HOST = os.getenv("HOST", "0.0.0.0" if ENVIRONMENT == "production" else "127.0.0.1")
+PORT = int(os.getenv("PORT", "8000"))
 
 # Default Groq Models
 GROQ_TEXT_MODEL = os.getenv("GROQ_TEXT_MODEL", "llama-3.3-70b-versatile")

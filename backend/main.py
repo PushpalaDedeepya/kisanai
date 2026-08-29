@@ -245,11 +245,7 @@ def auto_detect_location():
 
 
 # ------------------------------------------------------------------------------
-# SERVE FRONTEND DIRECTLY
+# SERVE FRONTEND DIRECTLY (HTML, CSS, JS, ASSETS)
 # ------------------------------------------------------------------------------
 if FRONTEND_DIR.exists():
-    app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
-
-    @app.get("/")
-    def serve_frontend_index():
-        return FileResponse(FRONTEND_DIR / "index.html")
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

@@ -1,7 +1,7 @@
 import io
 import base64
 import json
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from PIL import Image
 from config import GROQ_API_KEY, GROQ_VISION_MODEL
 from knowledge_service import search_knowledge

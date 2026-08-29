@@ -3,9 +3,9 @@
 // ==============================================================================
 
 const isDifferentDevPort = (window.location.port && window.location.port !== "8000" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"));
-const API_BASE = (!window.location.protocol.startsWith("http") || isDifferentDevPort)
+const API_BASE = window.KISAN_API_BASE || window.API_BASE || ((!window.location.protocol.startsWith("http") || isDifferentDevPort)
     ? "http://127.0.0.1:8000"
-    : window.location.origin;
+    : window.location.origin);
 
 let sessionId = "session-" + Math.random().toString(36).substring(2, 9);
 let currentSelectedLanguage = "Telugu";
@@ -751,6 +751,18 @@ function getClientOfflineAdvice(question, language) {
 // ------------------------------------------------------------------------------
 function initializeModals() {
     // Open Nav Buttons
+    const btnWeatherNav = document.getElementById("btnOpenWeather");
+    if (btnWeatherNav) {
+        btnWeatherNav.addEventListener("click", () => {
+            const weatherSection = document.getElementById("weatherBarSection");
+            if (weatherSection) {
+                weatherSection.scrollIntoView({ behavior: "smooth" });
+                const searchInput = document.getElementById("weatherSearchInput");
+                if (searchInput) searchInput.focus();
+            }
+        });
+    }
+
     document.getElementById("btnOpenImageModal").addEventListener("click", () => openModal("imageModal"));
     document.getElementById("btnUploadImageDock").addEventListener("click", () => openModal("imageModal"));
     document.getElementById("btnOpenSchemes").addEventListener("click", () => {

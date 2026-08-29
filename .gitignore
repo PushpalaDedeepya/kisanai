@@ -1,7 +1,16 @@
 .env
 *.env
+backend/.env
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 venv/
 .venv/
+env/
+.idea/
 .vscode/
+*.swp
+.DS_Store
+*.log

@@ -859,6 +859,32 @@ body {
     cursor: pointer;
 }
 
+.input-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    background: rgba(3, 15, 8, 0.7);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-main);
+    font-size: 13px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(70, 224, 118, 0.15);
+}
+
 .btn-analyze-image {
     width: 100%;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -1022,6 +1048,13 @@ body {
     font-weight: 600;
     color: var(--primary);
     text-decoration: none;
+}
+
+.helpline-intro {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
 }
 
 .helplines-list-container {
