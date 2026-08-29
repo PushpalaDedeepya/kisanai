@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Kisan AI | Intelligent Farming Assistant</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+
+</head><body><div class="background-orb orb-one"></div>
+<div class="background-orb orb-two"></div>
+<div class="background-grid"></div>
+
+<header class="navbar">
+
+    <div class="brand">
+        <div class="brand-icon">🌾</div>
+
+        <div>
+            <div class="brand-name">KISAN<span>AI</span></div>
+            <div class="brand-tagline">SMART FARMING • SMART FUTURE</div>
+        </div>
+    </div>
+
+    <div class="status">
+        <span class="status-dot"></span>
+        AI SYSTEM ONLINE
+    </div>
+
+</header>
+
+
+<main class="main-container">
+
+    <section class="hero">
+
+        <div class="hero-badge">
+            <span>✦</span>
+            AI-POWERED AGRICULTURE
+        </div>
+
+        <h1>
+            Farming advice,
+            <span>reimagined.</span>
+        </h1>
+
+        <p class="hero-description">
+            Your intelligent farming companion for crop guidance,
+            weather insights and practical agricultural solutions —
+            all in one place.
+        </p>
+
+        <div class="hero-stats">
+
+            <div class="stat">
+                <strong>24/7</strong>
+                <span>AI Assistance</span>
+            </div>
+
+            <div class="stat-divider"></div>
+
+            <div class="stat">
+                <strong>5+</strong>
+                <span>Languages</span>
+            </div>
+
+            <div class="stat-divider"></div>
+
+            <div class="stat">
+                <strong>AI</strong>
+                <span>Smart Advice</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="assistant-card">
+
+        <div class="card-glow"></div>
+
+        <div class="assistant-header">
+
+            <div class="assistant-title">
+
+                <div class="ai-avatar">
+                    🌱
+                </div>
+
+                <div>
+                    <h2>Ask Kisan AI</h2>
+                    <p>Your farming companion is ready.</p>
+                </div>
+
+            </div>
+
+            <div class="live-badge">
+                <span></span>
+                LIVE
+            </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="input-group">
+
+                <label for="language">
+                    <span>🌐</span>
+                    LANGUAGE
+                </label>
+
+                <select id="language">
+                    <option value="English">English</option>
+                    <option value="Telugu">తెలుగు</option>
+                    <option value="Hindi">हिन्दी</option>
+                    <option value="Tamil">தமிழ்</option>
+                    <option value="Kannada">ಕನ್ನಡ</option>
+                </select>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="location">
+                    <span>📍</span>
+                    FARM LOCATION
+                </label>
+
+                <input
+                    type="text"
+                    id="location"
+                    placeholder="Enter your city or village"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="input-group question-group">
+
+            <div class="question-label-row">
+
+                <label for="question">
+                    <span>💬</span>
+                    WHAT'S HAPPENING ON YOUR FARM?
+                </label>
+
+                <span class="ai-powered">AI POWERED</span>
+
+            </div>
+
+            <textarea
+                id="question"
+                placeholder="Ask anything about your crops, soil, pests, irrigation, fertilizers, weather..."
+            ></textarea>
+
+        </div>
+
+
+        <button id="askButton" class="ask-button">
+
+            <span class="button-icon">✦</span>
+
+            <span>ASK KISAN AI</span>
+
+            <span class="button-arrow">→</span>
+
+        </button>
+
+
+        <div id="loading" class="loading"></div>
+
+
+        <div id="response" class="response-card">
+
+            <div class="response-header">
+
+                <div class="response-title">
+
+                    <div class="response-icon">🤖</div>
+
+                    <div>
+                        <span>AI INSIGHT</span>
+                        <h3>Kisan AI says</h3>
+                    </div>
+
+                </div>
+
+                <div class="verified">
+                    ✓ AI RESPONSE
+                </div>
+
+            </div>
+
+            <div class="response-content">
+                <p id="answer">
+                    Your personalized farming advice will appear here.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="features">
+
+        <div class="section-heading">
+            <span>WHY KISAN AI</span>
+            <h2>One assistant. <em>Many possibilities.</em></h2>
+        </div>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-number">01</div>
+
+                <div class="feature-icon">🌱</div>
+
+                <h3>Crop Guidance</h3>
+
+                <p>
+                    Get practical AI-powered guidance for crops,
+                    soil, nutrients and farming decisions.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-number">02</div>
+
+                <div class="feature-icon">☁️</div>
+
+                <h3>Weather Intelligence</h3>
+
+                <p>
+                    Combine weather information with farming
+                    decisions to plan smarter.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-number">03</div>
+
+                <div class="feature-icon">🗣️</div>
+
+                <h3>Farmer Friendly</h3>
+
+                <p>
+                    Ask questions in your preferred language
+                    and receive simple, understandable answers.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="bottom-banner">
+
+        <div>
+            <span class="banner-label">THE FUTURE OF FARMING</span>
+
+            <h2>
+                Technology that speaks
+                <span>farmer.</span>
+            </h2>
+        </div>
+
+        <div class="banner-mark">
+            K<span>AI</span>
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div>
+        🌾 KISAN AI
+    </div>
+
+    <span>
+        Built for smarter & more sustainable agriculture.
+    </span>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
