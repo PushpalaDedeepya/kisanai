@@ -1,0 +1,82 @@
+{
+  "crops": {
+    "rice": {
+      "name": "Rice",
+      "soil": "Rice grows well in fertile clayey or loamy soil with good water-holding capacity.",
+      "water": "Rice generally needs sufficient water, especially during important growth stages. Avoid unnecessary waterlogging when it is not required.",
+      "tips": [
+        "Use healthy and good-quality seeds.",
+        "Maintain proper spacing between plants.",
+        "Monitor the field regularly for weeds and pests.",
+        "Use fertilizers according to soil requirements."
+      ]
+    },
+    "tomato": {
+      "name": "Tomato",
+      "soil": "Tomato grows well in fertile, well-drained soil rich in organic matter.",
+      "water": "Provide regular and consistent watering. Avoid both prolonged dryness and excessive watering.",
+      "tips": [
+        "Provide adequate sunlight.",
+        "Maintain proper spacing for good air circulation.",
+        "Monitor leaves and fruits regularly for pests and diseases.",
+        "Use balanced nutrients based on soil conditions."
+      ]
+    },
+    "cotton": {
+      "name": "Cotton",
+      "soil": "Cotton grows well in deep, fertile and well-drained soils.",
+      "water": "Cotton needs adequate moisture during important growth stages, but excessive water should be avoided.",
+      "tips": [
+        "Use suitable varieties for the local climate.",
+        "Monitor regularly for insect pests.",
+        "Keep the field free from excessive weeds.",
+        "Follow recommended fertilizer practices."
+      ]
+    },
+    "groundnut": {
+      "name": "Groundnut",
+      "soil": "Groundnut prefers loose, well-drained sandy loam or loamy soil.",
+      "water": "Provide adequate moisture during germination, flowering and pod development.",
+      "tips": [
+        "Use good-quality seeds.",
+        "Avoid waterlogging.",
+        "Control weeds during early crop growth.",
+        "Monitor the crop for leaf diseases and insect pests."
+      ]
+    },
+    "chilli": {
+      "name": "Chilli",
+      "soil": "Chilli grows well in fertile and well-drained loamy soil.",
+      "water": "Water regularly according to soil moisture and weather conditions. Avoid excessive watering.",
+      "tips": [
+        "Use healthy seedlings.",
+        "Maintain proper spacing.",
+        "Monitor plants for sucking pests.",
+        "Remove severely affected plant parts when appropriate."
+      ]
+    }
+  },
+  "general_farming": {
+    "soil_health": [
+      "Test soil before making major fertilizer decisions.",
+      "Adding suitable organic matter can improve soil structure and fertility.",
+      "Avoid excessive use of fertilizers."
+    ],
+    "pest_management": [
+      "Inspect crops regularly for early signs of pests.",
+      "Use integrated pest management practices.",
+      "Prefer appropriate and recommended control methods based on the identified pest.",
+      "Do not use pesticides without following the product label and local agricultural guidance."
+    ],
+    "water_management": [
+      "Irrigate according to crop stage, soil condition and weather.",
+      "Avoid unnecessary over-irrigation.",
+      "Use efficient irrigation methods where practical."
+    ],
+    "weather": [
+      "Check local weather conditions before irrigation or spraying.",
+      "Heavy rain can increase the risk of waterlogging and some crop diseases.",
+      "Strong winds and extreme temperatures can affect crop growth."
+    ]
+  }
+}
