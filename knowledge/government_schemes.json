@@ -1,0 +1,187 @@
+{
+  "last_updated": "2026-08-29",
+  "central_schemes": [
+    {
+      "id": "pm_kisan",
+      "scheme_name": "PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)",
+      "category": "Direct Income Support",
+      "description": "Central Sector Scheme providing income support to all landholding farmer families across India to supplement their financial needs for procuring agricultural inputs and domestic needs.",
+      "benefits": "₹6,000 per year directly transferred to the farmer's bank account in 3 equal four-monthly installments of ₹2,000 each (via DBT).",
+      "eligibility": "All landholding farmer families having cultivable landholding in their names. Exclusions apply to institutional landholders, farmer families holding constitutional posts, serving/retired government employees, income tax payees, and professionals (doctors, engineers, lawyers).",
+      "required_documents": [
+        "Aadhaar Card (Mandatory & linked with mobile)",
+        "Proof of citizenship / Land Ownership Document (RoR / Khata / Patta / 7/12 extract)",
+        "Aadhaar-seeded active Bank Account details with IFSC code",
+        "Valid Mobile Number"
+      ],
+      "how_to_apply": "1. Visit the official PM-KISAN portal (pmkisan.gov.in) -> Farmers Corner -> 'New Farmer Registration'.\n2. Enter Rural/Urban Farmer Registration, Aadhaar Number, State, and Mobile.\n3. Verify OTP, fill land details (Survey/Khata/Khasra number), upload land document, and submit.\n4. Complete mandatory biometric e-KYC online (OTP) or through nearest Common Service Centre (CSC).",
+      "official_source": "https://pmkisan.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pmfby",
+      "scheme_name": "PMFBY (Pradhan Mantri Fasal Bima Yojana)",
+      "category": "Crop Insurance",
+      "description": "Comprehensive risk insurance providing financial support to farmers suffering crop loss/damage arising out of unforeseen weather events, localized calamities, post-harvest losses, and unseasonal rains.",
+      "benefits": "Maximum subsidized premium paid by farmers: Only 2% of sum insured for all Kharif crops, 1.5% for all Rabi crops, and 5% for Annual Commercial/Horticultural crops. Remaining premium is heavily subsidized 50:50 by Central and State Governments. Full insured sum paid on assessed crop loss.",
+      "eligibility": "All farmers including sharecroppers and tenant farmers growing notified crops in notified areas are eligible. Loanee and non-loanee farmers alike.",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land Record (Khasra/Khatauni/7-12) or Sowing Certificate / Tenancy Agreement",
+        "Bank Passbook copy showing active account",
+        "Crop Sowing Certificate / Declaration"
+      ],
+      "how_to_apply": "1. Apply online via National Crop Insurance Portal (pmfby.gov.in) or Crop Insurance Mobile App.\n2. Or apply through Bank branches, Primary Agricultural Credit Societies (PACS), or nearest Common Service Centre (CSC) before the seasonal cut-off date.\n3. In case of localized calamity or post-harvest losses, intimate damage within 72 hours via PMFBY App or helpline 14447.",
+      "official_source": "https://pmfby.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "kcc",
+      "scheme_name": "Kisan Credit Card (KCC) Scheme",
+      "category": "Agricultural Credit",
+      "description": "Ensures timely and affordable institutional credit for farmers to meet short-term cultivation expenses, post-harvest expenses, produce marketing, working capital for maintenance of farm assets, and activities allied to agriculture (dairy, fisheries, poultry).",
+      "benefits": "Credit limit up to ₹3 Lakhs at an effective interest rate of only 4% per annum (7% standard rate with 3% prompt repayment subvention). Collateral-free loan up to ₹1.6 Lakhs (relaxed up to ₹2 Lakhs in certain credit-linked tie-ups). Includes ATM-cum-debit card (RuPay KCC).",
+      "eligibility": "Individual/joint borrowers who are owner cultivators, tenant farmers, oral lessees, sharecroppers, and Self Help Groups (SHGs) or Joint Liability Groups (JLGs) of farmers.",
+      "required_documents": [
+        "Duly filled KCC Application Form",
+        "Identity Proof (Aadhaar / Voter ID / Driving License)",
+        "Address Proof",
+        "Land Record Documents certified by revenue authority",
+        "Cropping pattern details (Kharif/Rabi crops cultivated)"
+      ],
+      "how_to_apply": "1. Download the one-page KCC application form from pmkisan.gov.in or bank portals.\n2. Submit the completed form along with land documents and Aadhaar to your local commercial bank, RRB, or Cooperative Bank branch.\n3. Banks process and sanction KCC within 14 working days.",
+      "official_source": "https://www.myscheme.gov.in/schemes/kcc",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "soil_health_card",
+      "scheme_name": "Soil Health Card Scheme",
+      "category": "Soil & Nutrient Management",
+      "description": "Government program issuing crop-wise nutrient status cards to farmers with customized dosage recommendations for 12 essential soil parameters (N, P, K, S, Zn, Fe, Cu, Mn, Bo, pH, EC, OC) to prevent excessive fertilizer overuse and improve soil fertility.",
+      "benefits": "Free soil testing and customized Soil Health Card every 3 years. Helps farmers reduce unnecessary fertilizer expenditure by 15-25% while boosting crop yield.",
+      "eligibility": "All agricultural landowners and cultivators across all States and Union Territories in India.",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land parcel details (Survey number, Village, Block)",
+        "Mobile Number"
+      ],
+      "how_to_apply": "1. Soil samples are drawn from farm GPS coordinates by State Agriculture Dept staff or village Krishi Sakhi.\n2. Farmers can also deposit soil samples at the nearest Soil Testing Laboratory (STL) or Krishi Vigyan Kendra (KVK).\n3. View/download your Soil Health Card online by entering your mobile number or state/district on soilhealth.dac.gov.in.",
+      "official_source": "https://soilhealth.dac.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pmksy",
+      "scheme_name": "PMKSY - Per Drop More Crop (Micro-Irrigation)",
+      "category": "Irrigation Infrastructure",
+      "description": "Pradhan Mantri Krishi Sinchayee Yojana focuses on expanding farm water access ('Har Khet Ko Pani') and enhancing water-use efficiency through Drip and Sprinkler micro-irrigation systems ('Per Drop More Crop').",
+      "benefits": "Up to 45% to 55% financial subsidy on installation of Drip and Sprinkler irrigation systems for Small and Marginal Farmers (up to 45% for other farmers; some states provide additional top-up subsidies up to 70-90%).",
+      "eligibility": "All categories of farmers having cultivable land with assured water source (borewell/canal/open well/pond).",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land ownership certificate (7/12, Patta/Khata)",
+        "Bank Passbook copy",
+        "Water and power source availability certificate"
+      ],
+      "how_to_apply": "1. Apply via the respective State Horticulture / Agriculture Department micro-irrigation portal.\n2. Select registered manufacturer/dealer for micro-irrigation layout inspection.\n3. Post field verification and installation, subsidy is directly credited to bank or vendor.",
+      "official_source": "https://pmksy.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pm_kusum",
+      "scheme_name": "PM-KUSUM (Solar Agriculture Pumps Scheme)",
+      "category": "Renewable Energy & Irrigation",
+      "description": "Provides energy security and de-dieselization for farmers by subsidizing stand-alone Solar Agriculture Pumps and solarizing existing grid-connected agriculture pumps.",
+      "benefits": "Up to 60% subsidy (30% Central + 30% State Govt) on standalone solar water pumps (Component B), farmer contributes only 10-40% (bank loan available for remaining 30%). Allows selling surplus solar power back to grid.",
+      "eligibility": "Individual farmers, group of farmers, Panchayats, Cooperatives, Water User Associations (WUAs) and Farmer Producer Organizations (FPOs).",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land ownership record",
+        "Bank Account details",
+        "Source of water proof"
+      ],
+      "how_to_apply": "1. Register on the designated State Nodal Renewable Energy Agency portal (e.g., MEDA, REDA, APSEEDCO, etc.).\n2. Submit land documents and pump capacity requirement.\n3. Pay farmer share upon application approval.",
+      "official_source": "https://pmkusum.mnre.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "smam_mechanization",
+      "scheme_name": "SMAM (Sub-Mission on Agricultural Mechanization)",
+      "category": "Farm Machinery & Subsidies",
+      "description": "Promotes agricultural mechanization among small and marginal farmers, setting up Custom Hiring Centres (CHCs) and providing purchase subsidies on farm implements (tractors, power tillers, rotavators, sprayers, harvesters, drone sprayers).",
+      "benefits": "40% to 50% subsidy on procurement of individual agricultural machinery (up to 80% for establishment of Farm Machinery Banks / Custom Hiring Centres).",
+      "eligibility": "All Indian farmers, with priority given to Small, Marginal, Women, SC/ST farmers, and registered FPOs.",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land Record documents (Khatauni/Patta)",
+        "Bank Passbook",
+        "Category Certificate (if SC/ST)"
+      ],
+      "how_to_apply": "1. Register on the Direct Benefit Transfer in Agriculture Mechanization portal (agrimachinery.nic.in).\n2. Choose machine type and dealer, upload documents, and track subsidy allotment.",
+      "official_source": "https://agrimachinery.nic.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pkvy_organic",
+      "scheme_name": "PKVY (Paramparagat Krishi Vikas Yojana)",
+      "category": "Organic Farming",
+      "description": "Supports and promotes certified organic farming through cluster approach and Participatory Guarantee System (PGS) certification, eliminating chemical reliance.",
+      "benefits": "Financial assistance of ₹50,000 per hectare for 3 years, of which ₹31,000/ha is directly provided to farmers for organic inputs (seeds, bio-fertilizers, bio-pesticides, vermicompost).",
+      "eligibility": "Farmers willing to form clusters of 20 or more farmers having 50 acres (20 hectares) contiguous land.",
+      "required_documents": [
+        "Aadhaar Card",
+        "Land Records",
+        "Bank Account details",
+        "Group/Cluster agreement"
+      ],
+      "how_to_apply": "1. Approach local Block Agriculture Officer or District Agriculture Officer to enroll in an existing organic cluster or form a new 20-farmer cluster under PGS-India portal (pgsindia-ncof.gov.in).",
+      "official_source": "https://pgsindia-ncof.gov.in",
+      "last_verified": "2026-08-29"
+    }
+  ],
+  "state_schemes": [
+    {
+      "id": "rythu_bharosa_ap",
+      "scheme_name": "YSR Rythu Bharosa (Andhra Pradesh)",
+      "state": "Andhra Pradesh",
+      "category": "Direct Income Support",
+      "description": "Financial assistance to farmer families including tenant farmers / RoFR cultivators in Andhra Pradesh.",
+      "benefits": "₹13,500 per year per farmer family (inclusive of PM-KISAN ₹6,000). Free borewells and zero-interest crop loans under specific state programs.",
+      "eligibility": "Landowner farmers cultivating land in AP; tenant farmers belonging to SC, ST, BC, and Minority categories.",
+      "official_source": "https://ysrrythubharosa.ap.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "rythu_bandhu_ts",
+      "scheme_name": "Rythu Bandhu / Rythu Bharosa (Telangana)",
+      "state": "Telangana",
+      "category": "Investment Support",
+      "description": "Agriculture investment support scheme for Kharif and Rabi seasons to support initial purchase of inputs like seeds, fertilizers, pesticides, and labour.",
+      "benefits": "Direct cash assistance per acre per season transferred to farmers' bank accounts.",
+      "eligibility": "All pattadar farmers in Telangana having passbook / registered land.",
+      "official_source": "https://rythubandhu.telangana.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "krushak_odisha",
+      "scheme_name": "KALIA Scheme (Odisha)",
+      "state": "Odisha",
+      "category": "Comprehensive Livelihood Support",
+      "description": "Krushak Assistance for Livelihood and Income Augmentation for small/marginal farmers and landless agricultural households.",
+      "benefits": "Financial assistance for cultivation, livelihood support for landless households, and life/disability insurance cover.",
+      "eligibility": "Small, marginal farmers and landless agricultural workers resident in Odisha.",
+      "official_source": "https://kalia.odisha.gov.in",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "krishak_bandhu_wb",
+      "scheme_name": "Krishak Bandhu (West Bengal)",
+      "state": "West Bengal",
+      "category": "Direct Income & Death Benefit",
+      "description": "Direct financial assistance per year for farm inputs plus ₹2 Lakh death benefit assurance to family of deceased farmers aged 18-60.",
+      "benefits": "Up to ₹10,000 per year per acre in two installments (Kharif and Rabi seasons), minimum ₹4,000/year pro-rata.",
+      "eligibility": "All recorded farm owners and recorded Bhagchasi (sharecroppers) in West Bengal.",
+      "official_source": "https://krishakbandhu.wb.gov.in",
+      "last_verified": "2026-08-29"
+    }
+  ]
+}

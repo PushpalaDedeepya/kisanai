@@ -1,0 +1,167 @@
+{
+  "last_updated": "2026-08-29",
+  "national_helplines": [
+    {
+      "id": "kcc",
+      "name": "Kisan Call Centre (KCC)",
+      "purpose": "All-India Toll-Free Agricultural Expert Advisory in 22 Local Languages",
+      "phone": "1800-180-1551",
+      "call_link": "tel:18001801551",
+      "working_hours": "6:00 AM to 10:00 PM (All 7 Days)",
+      "services": [
+        "Crop pest and disease diagnosis advisory",
+        "Fertilizer and pesticide dosage consultation",
+        "Weather advisories and seasonal alerts",
+        "Market prices and mandi information",
+        "Guidance on Central and State agricultural schemes"
+      ],
+      "official_source": "Ministry of Agriculture & Farmers Welfare, Govt of India (daccgov.in / kisan.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pm_kisan_helpline",
+      "name": "PM-KISAN Central Helpline",
+      "purpose": "Direct Benefit Transfer & Installment Support for Farmers",
+      "phone": "155261",
+      "alternate_phone": "011-24300606",
+      "call_link": "tel:155261",
+      "working_hours": "9:30 AM to 6:00 PM (Monday to Saturday)",
+      "services": [
+        "PM-KISAN installment payment status",
+        "e-KYC verification assistance",
+        "Bank account Aadhaar seeding issues",
+        "Beneficiary status and grievance registration"
+      ],
+      "official_source": "PM-KISAN Portal, Govt of India (pmkisan.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "pmfby_helpline",
+      "name": "National Crop Insurance Helpline (PMFBY)",
+      "purpose": "Pradhan Mantri Fasal Bima Yojana Claims & Crop Loss Intimation",
+      "phone": "14447",
+      "alternate_phone": "1800-200-5142",
+      "call_link": "tel:14447",
+      "working_hours": "24x7 Toll-Free Support",
+      "services": [
+        "Crop loss intimation within 72 hours of localized calamity/post-harvest loss",
+        "Crop insurance policy status and application tracking",
+        "Insurance company grievance redressal",
+        "Claim payout status checking"
+      ],
+      "official_source": "PMFBY Portal, Department of Agriculture & Farmers Welfare (pmfby.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "soil_health_card",
+      "name": "Soil Health Card Helpdesk",
+      "purpose": "Soil Testing, Soil Health Cards & Fertilizer Recommendation Guidance",
+      "phone": "011-23381012",
+      "call_link": "tel:01123381012",
+      "working_hours": "10:00 AM to 5:00 PM (Monday to Friday)",
+      "services": [
+        "Soil test report lookup by farmer Aadhaar / mobile",
+        "Soil nutrient status (NPK, micronutrients, pH, EC)",
+        "Nearest Soil Testing Laboratory (STL) location"
+      ],
+      "official_source": "National Soil Health Portal (soilhealth.dac.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "kcc_credit_card",
+      "name": "Kisan Credit Card (KCC) Banking Helpdesk",
+      "purpose": "Subsidized Institutional Farm Credit & Loan Assistance (NABARD / SBI)",
+      "phone": "1800-11-2211",
+      "call_link": "tel:1800112211",
+      "working_hours": "24x7 Bank Helpline",
+      "services": [
+        "Kisan Credit Card application requirements",
+        "Interest subvention scheme guidance (7% base rate, 3% prompt repayment incentive -> 4% net)",
+        "Loan renewal and limit queries"
+      ],
+      "official_source": "NABARD & Ministry of Agriculture & Farmers Welfare (nabard.org)",
+      "last_verified": "2026-08-29"
+    },
+    {
+      "id": "enam_helpline",
+      "name": "e-NAM (National Agriculture Market) Support",
+      "purpose": "Online Mandi Trading, E-Auction & Inter-Mandi Price Transparency",
+      "phone": "1800-270-0224",
+      "call_link": "tel:18002700224",
+      "working_hours": "9:00 AM to 9:00 PM (Monday to Saturday)",
+      "services": [
+        "Farmer registration on e-NAM platform",
+        "Mandi assaying, lot creation and bidding status",
+        "Online payment and logistics assistance"
+      ],
+      "official_source": "Small Farmers Agri-Business Consortium (SFAC) (enam.gov.in)",
+      "last_verified": "2026-08-29"
+    }
+  ],
+  "state_helplines": {
+    "andhra_pradesh": {
+      "state": "Andhra Pradesh",
+      "name": "AP YSR Rythu Bharosa / Agriculture Call Center",
+      "phone": "1902",
+      "call_link": "tel:1902",
+      "official_source": "Department of Agriculture, Govt of Andhra Pradesh (apagrisnet.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    "telangana": {
+      "state": "Telangana",
+      "name": "Telangana Kisan Call Center / Rythu Bandhu Support",
+      "phone": "040-23383520",
+      "call_link": "tel:04023383520",
+      "official_source": "Department of Agriculture, Govt of Telangana (agri.telangana.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    "karnataka": {
+      "state": "Karnataka",
+      "name": "Karnataka Raitha Sahayavani (Farmer Helpline)",
+      "phone": "1800-425-3553",
+      "call_link": "tel:18004253553",
+      "official_source": "Department of Agriculture, Govt of Karnataka (raitamitra.karnataka.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    "tamil_nadu": {
+      "state": "Tamil Nadu",
+      "name": "Tamil Nadu Uzhavan Helpdesk & Agri Advisory",
+      "phone": "1800-180-1551",
+      "call_link": "tel:18001801551",
+      "official_source": "Department of Agriculture and Farmers Welfare, Tamil Nadu (agritech.tnau.ac.in)",
+      "last_verified": "2026-08-29"
+    },
+    "maharashtra": {
+      "state": "Maharashtra",
+      "name": "Maharashtra Krishi Salla Kendra & Shetkari Sahayyata",
+      "phone": "1800-233-4000",
+      "call_link": "tel:18002334000",
+      "official_source": "Department of Agriculture, Govt of Maharashtra (krishi.maharashtra.gov.in)",
+      "last_verified": "2026-08-29"
+    },
+    "uttar_pradesh": {
+      "state": "Uttar Pradesh",
+      "name": "UP Kisan Helpline & Pardarshi Kisan Seva Portal",
+      "phone": "1800-180-1551",
+      "call_link": "tel:18001801551",
+      "official_source": "Department of Agriculture, Uttar Pradesh (upagriculture.com)",
+      "last_verified": "2026-08-29"
+    },
+    "punjab": {
+      "state": "Punjab",
+      "name": "Punjab PAU Ludhiana Farmer Helpline / Agriculture Dept",
+      "phone": "0161-2401960",
+      "call_link": "tel:01612401960",
+      "official_source": "Punjab Agricultural University (PAU) & Govt of Punjab (pau.edu)",
+      "last_verified": "2026-08-29"
+    },
+    "west_bengal": {
+      "state": "West Bengal",
+      "name": "West Bengal Krishak Bandhu Helpdesk",
+      "phone": "8336957370",
+      "call_link": "tel:8336957370",
+      "official_source": "Department of Agriculture, Govt of West Bengal (matirkatha.net)",
+      "last_verified": "2026-08-29"
+    }
+  }
+}

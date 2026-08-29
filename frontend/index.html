@@ -3,407 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Kisan AI | Smart Farming Assistant</title>
+    <title>Kisan AI | Smart Multilingual Farmer Advisory Assistant</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <div class="background-grid"></div>
 
+<!-- NAVIGATION BAR -->
 <header class="navbar">
     <div class="brand">
         <div class="brand-icon">🌾</div>
-
         <div>
             <div class="brand-name">KISAN<span>AI</span></div>
-            <div class="brand-tagline">SMART FARMING • SMART FUTURE</div>
+            <div class="brand-tagline">SMART MULTILINGUAL FARMING ASSISTANT • కిసాన్ AI • किसान AI</div>
         </div>
     </div>
 
-    <div class="status">
-        <span class="status-dot"></span>
-        <span id="connectionStatus">AI SYSTEM ONLINE</span>
+    <div class="nav-controls">
+        <!-- Quick Nav Modals -->
+        <button type="button" class="nav-btn" id="btnOpenWeather">🌦️ Weather</button>
+        <button type="button" class="nav-btn" id="btnOpenSchemes">🏛️ Schemes</button>
+        <button type="button" class="nav-btn" id="btnOpenHelplines">📞 Helplines</button>
+        <button type="button" class="nav-btn btn-highlight" id="btnOpenImageModal">📷 Scan Crop</button>
+
+        <!-- Language Selector -->
+        <div class="language-dropdown-wrapper">
+            <span class="lang-icon">🌐</span>
+            <select id="languageSelect" title="Choose Your Preferred Language">
+                <option value="English">English</option>
+                <option value="Telugu" selected>తెలుగు (Telugu)</option>
+                <option value="Hindi">हिन्दी (Hindi)</option>
+                <option value="Tamil">தமிழ் (Tamil)</option>
+                <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+                <option value="Malayalam">മലയാളം (Malayalam)</option>
+                <option value="Marathi">मराठी (Marathi)</option>
+                <option value="Bengali">বাংলা (Bengali)</option>
+                <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+                <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+            </select>
+        </div>
+
+        <!-- System Status Badge -->
+        <div class="status-pill" id="systemStatusPill">
+            <span class="status-dot"></span>
+            <span id="connectionStatus">AI ONLINE</span>
+        </div>
     </div>
 </header>
 
+<!-- MAIN CONTAINER -->
 <main class="main-container">
 
-    <section class="hero">
-        <div class="hero-badge">✦ AI-POWERED AGRICULTURE</div>
+    <!-- LIVE WEATHER DASHBOARD BAR -->
+    <section class="weather-bar" id="weatherBarSection">
+        <div class="weather-bar-header">
+            <div class="weather-title">
+                <span class="weather-icon-live">🌦️</span>
+                <div>
+                    <h3>Live Agricultural Weather & Advisory</h3>
+                    <p id="weatherLocationDisplay">Detecting your location...</p>
+                </div>
+            </div>
 
-        <h1>
-            Farming advice,
-            <span>reimagined.</span>
-        </h1>
+            <div class="weather-location-box">
+                <input type="text" id="weatherSearchInput" placeholder="Enter Village / City (e.g. Guntur)">
+                <button type="button" id="btnDetectLocation" title="Auto Detect Location">📍 GPS / Auto</button>
+                <button type="button" id="btnFetchWeather">Get Weather</button>
+            </div>
+        </div>
 
-        <p>
-            Speak naturally. Share your location. Get intelligent
-            farming guidance — even when connectivity is limited.
-        </p>
+        <!-- Quick District Chips -->
+        <div class="weather-quick-locations">
+            <span class="quick-loc-label">Popular Districts:</span>
+            <button type="button" class="loc-chip" data-loc="Guntur">📍 Guntur (గుంటూరు)</button>
+            <button type="button" class="loc-chip" data-loc="Hyderabad">📍 Hyderabad (హైదరాబాద్)</button>
+            <button type="button" class="loc-chip" data-loc="Warangal">📍 Warangal (వరంగల్)</button>
+            <button type="button" class="loc-chip" data-loc="Vijayawada">📍 Vijayawada (విజయవాడ)</button>
+            <button type="button" class="loc-chip" data-loc="Pune">📍 Pune (पुणे)</button>
+            <button type="button" class="loc-chip" data-loc="Ludhiana">📍 Ludhiana (ਲੁਧਿਆਣਾ)</button>
+            <button type="button" class="loc-chip" data-loc="Varanasi">📍 Varanasi (वाराणसी)</button>
+        </div>
+
+        <div class="weather-metrics-grid" id="weatherMetricsGrid">
+            <div class="metric-card">
+                <span class="metric-label">TEMPERATURE</span>
+                <div class="metric-val" id="dispTemp">-- °C</div>
+                <small id="dispCondition">Checking...</small>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">HUMIDITY</span>
+                <div class="metric-val" id="dispHumidity">-- %</div>
+                <small id="dispFeelsLike">Feels like --</small>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">24H RAIN CHANCE</span>
+                <div class="metric-val" id="dispRainProb">-- %</div>
+                <small id="dispPrecip">-- mm</small>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">WIND SPEED</span>
+                <div class="metric-val" id="dispWind">-- km/h</div>
+                <small id="dispWindDir">Normal</small>
+            </div>
+        </div>
+
+        <div class="weather-advisory-banner" id="weatherAdvisoryBanner">
+            <div class="advisory-icon">💡</div>
+            <div class="advisory-text" id="weatherAdvisoryText">
+                Checking local meteorological conditions for spraying and irrigation suitability...
+            </div>
+        </div>
     </section>
 
+    <!-- QUICK FARMER QUESTION PROMPTS -->
+    <section class="quick-prompts-section">
+        <div class="prompts-label">QUICK FARMING QUESTIONS (క్విక్ ప్రశ్నలు):</div>
+        <div class="prompts-scroll">
+            <button type="button" class="prompt-chip" data-prompt="వరి పంటకు ఏ ఎరువు వేయాలి?">🌾 వరి ఎరువులు (Rice Fertilizer)</button>
+            <button type="button" class="prompt-chip" data-prompt="నా పత్తి పంటకు పురుగులు వచ్చాయి. ఈరోజు మందు పిచికారీ చేయవచ్చా?">🐛 పత్తి పురుగులు & పిచికారీ (Cotton Pests)</button>
+            <button type="button" class="prompt-chip" data-prompt="My tomato leaves are turning yellow with brown spots. What should I do?">🍅 Tomato Yellow Leaves</button>
+            <button type="button" class="prompt-chip" data-prompt="ఈరోజు వాతావరణం మందు పిచికారీకి అనుకూలమా?">🌦️ మందు పిచికారీ చేయవచ్చా? (Can I Spray Today?)</button>
+            <button type="button" class="prompt-chip" data-prompt="Should I irrigate my crop today?">💧 Irrigation Advice</button>
+            <button type="button" class="prompt-chip" data-prompt="రైతులకు ఉన్న ప్రధాన ప్రభుత్వ పథకాలు ఏమిటి?">🏛️ ప్రభుత్వ పథకాలు (Govt Schemes)</button>
+            <button type="button" class="prompt-chip" data-prompt="నాకు అత్యవసర వ్యవసాయ నిపుణుల హెల్ప్‌లైన్ నంబర్ కావాలి">📞 రైతు హెల్ప్‌లైన్ (Farmer Helpline)</button>
+            <button type="button" class="prompt-chip" data-action="open-scanner">📷 Identify Crop Disease from Image</button>
+        </div>
+    </section>
 
-    <section class="assistant-card">
-
-        <div class="assistant-header">
-            <div class="assistant-title">
-
+    <!-- CHAT CONVERSATION CONTAINER -->
+    <section class="chat-container">
+        <div class="chat-header">
+            <div class="chat-header-title">
                 <div class="ai-avatar">🌱</div>
-
                 <div>
-                    <h2>Ask Kisan AI</h2>
-                    <p>Your farming companion is ready.</p>
+                    <h2>Kisan AI Assistant</h2>
+                    <p id="chatSubtext">Text • Voice • Image in your preferred language</p>
                 </div>
-
             </div>
-
-            <div class="live-badge">
-                <span></span> READY
-            </div>
+            <button type="button" class="btn-clear-chat" id="btnClearChat" title="Start New Conversation">🔄 New Chat</button>
         </div>
 
-
-        <div class="form-grid">
-
-            <!-- LANGUAGE -->
-
-            <div class="input-group">
-
-                <label for="language">
-                    🌐 LANGUAGE
-                </label>
-
-                <select id="language">
-
-                    <option value="English">
-                        English
-                    </option>
-
-                    <option value="Telugu">
-                        తెలుగు
-                    </option>
-
-                    <option value="Hindi">
-                        हिन्दी
-                    </option>
-
-                    <option value="Tamil">
-                        தமிழ்
-                    </option>
-
-                    <option value="Kannada">
-                        ಕನ್ನಡ
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- LOCATION -->
-
-            <div class="input-group">
-
-                <label>
-                    📍 FARM LOCATION
-                </label>
-
-                <div class="location-row">
-
-                    <input
-                        type="text"
-                        id="location"
-                        placeholder="Click 📍 to detect location"
-                        readonly
-                    >
-
-                    <button
-                        type="button"
-                        id="locationButton"
-                        class="location-button"
-                    >
-                        📍
-                    </button>
-
-                </div>
-
-                <small id="locationStatus">
-                    Click the location button to detect your location.
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- QUESTION -->
-
-        <div class="input-group question-group">
-
-            <div class="question-label-row">
-
-                <label for="question">
-                    💬 FARMER'S QUESTION
-                </label>
-
-                <button
-                    type="button"
-                    id="voiceButton"
-                    class="voice-button"
-                >
-                    🎙️ Speak
-                </button>
-
-            </div>
-
-            <textarea
-                id="question"
-                placeholder="Example: My tomato leaves are turning yellow..."
-            ></textarea>
-
-            <div
-                class="voice-status"
-                id="voiceStatus"
-            ></div>
-
-        </div>
-
-
-        <!-- ASK -->
-
-        <button
-            type="button"
-            id="askButton"
-            class="ask-button"
-        >
-            <span>✦</span>
-            ASK KISAN AI
-            <span class="button-arrow">→</span>
-        </button>
-
-
-        <div
-            id="loading"
-            class="loading"
-        ></div>
-
-
-        <!-- AI RESPONSE -->
-
-        <section
-            id="response"
-            class="response-card"
-        >
-
-            <div class="response-header">
-
-                <div class="response-title">
-
-                    <div class="response-icon">
-                        🤖
+        <!-- MESSAGE STREAM -->
+        <div class="message-stream" id="messageStream">
+            <!-- Initial Welcome Message -->
+            <div class="message-row ai-row">
+                <div class="avatar-bubble">🌾</div>
+                <div class="message-bubble ai-bubble">
+                    <div class="bubble-header">
+                        <span class="sender-name">Kisan AI Advisory</span>
+                        <span class="badge-mode">VERIFIED AGRICULTURAL ADVISOR</span>
                     </div>
-
-                    <div>
-                        <span>AI INSIGHT</span>
-                        <h3>Kisan AI says</h3>
+                    <div class="bubble-content" id="welcomeMessageContent">
+                        నమస్కారం! నేను మీ <strong>కిసాన్ AI (Kisan AI)</strong> వ్యవసాయ సలహాదారుని. 
+                        మీరు మీ పంటలు (వరి, పత్తి, టమోటా, మిరప, వేరుశనగ మొదలైనవి), చీడపీడలు, తెగుళ్ళు, ఎరువులు, నీటిపారుదల, నేటి వాతావరణం మరియు ప్రభుత్వ పథకాల గురించి తెలుగు లేదా మీ ఇష్టమైన భాషలో <strong>మాట్లాడి (Voice), టైప్ చేసి (Text) లేదా ఫోటో పంపి (Image)</strong> అడగవచ్చు.
                     </div>
-
+                    <div class="bubble-actions">
+                        <button type="button" class="btn-bubble-action btn-speak" data-text="నమస్కారం! నేను మీ కిసాన్ AI వ్యవసాయ సలహాదారుని. మీ వ్యవసాయ సమస్యల గురించి అడగండి." title="Listen to Answer">🔊 Listen Aloud</button>
+                        <button type="button" class="btn-bubble-action btn-copy" title="Copy Text">📋 Copy</button>
+                    </div>
                 </div>
-
-                <div class="verified">
-                    AI RESPONSE
-                </div>
-
             </div>
-
-            <div class="response-content">
-
-                <p id="answer">
-                    Your farming advice will appear here.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- PRESCRIPTION -->
-
-        <section
-            id="prescriptionPage"
-            class="prescription-page"
-        >
-
-            <div class="prescription-top">
-
-                <div>
-
-                    <span class="prescription-label">
-                        FARMER ADVISORY
-                    </span>
-
-                    <h2>🌾 Your Farm Plan</h2>
-
-                </div>
-
-                <div
-                    class="offline-badge"
-                    id="advisoryMode"
-                >
-                    WAITING
-                </div>
-
-            </div>
-
-
-            <div class="prescription-info">
-
-                <div>
-                    <span>LOCATION</span>
-
-                    <strong id="prescriptionLocation">
-                        Not available
-                    </strong>
-                </div>
-
-                <div>
-                    <span>LANGUAGE</span>
-
-                    <strong id="prescriptionLanguage">
-                        English
-                    </strong>
-                </div>
-
-            </div>
-
-
-            <div class="advice-box">
-
-                <div class="advice-icon">
-                    🌱
-                </div>
-
-                <div>
-
-                    <h3>
-                        Recommended Action
-                    </h3>
-
-                    <p id="prescriptionAdvice">
-                        Ask Kisan AI to generate your farm advisory.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="safety-note">
-
-                ⚠️ For crop protection products, always follow
-                the product label and local agricultural expert guidance.
-
-            </div>
-
-        </section>
-
-    </section>
-
-
-    <!-- FEATURES -->
-
-    <section class="features">
-
-        <div class="section-heading">
-
-            <span>BUILT FOR FARMERS</span>
-
-            <h2>
-                Smart technology,
-                <em>simple farming.</em>
-            </h2>
-
         </div>
 
-
-        <div class="feature-grid">
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    🎙️
-                </div>
-
-                <h3>Voice First</h3>
-
-                <p>
-                    Ask questions using your voice instead of typing.
-                </p>
-
-            </div>
-
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    📍
-                </div>
-
-                <h3>Location Aware</h3>
-
-                <p>
-                    Detect your location and use it for relevant
-                    agricultural context.
-                </p>
-
-            </div>
-
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    📡
-                </div>
-
-                <h3>Offline Ready</h3>
-
-                <p>
-                    Basic farming guidance remains available
-                    when the network is unavailable.
-                </p>
-
-            </div>
-
+        <!-- TYPING / LOADING INDICATOR -->
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <span></span><span></span><span></span>
+            <span class="typing-text">Kisan AI is analyzing your farming query...</span>
         </div>
 
+        <!-- VOICE LISTENING BAR -->
+        <div class="voice-recording-bar" id="voiceRecordingBar" style="display: none;">
+            <div class="pulse-ring"></div>
+            <div class="voice-text" id="voiceListeningText">🎙️ Listening in Telugu... Speak your farming question clearly.</div>
+            <button type="button" class="btn-stop-voice" id="btnStopVoice">⏹ Stop</button>
+        </div>
+
+        <!-- INPUT DOCK -->
+        <div class="chat-input-dock">
+            <button type="button" class="dock-btn" id="btnUploadImageDock" title="Upload Crop/Leaf Photo">📷</button>
+            <button type="button" class="dock-btn" id="btnVoiceDock" title="Speak Your Farming Question">🎙️</button>
+            
+            <textarea id="chatTextInput" placeholder="Ask your farming question or speak here (e.g. నా వరి పంటకు ఏ ఎరువు వేయాలి?)..." rows="1"></textarea>
+
+            <button type="button" class="dock-btn btn-send" id="btnSendMessage" title="Send Question">
+                <span>Send</span> ➔
+            </button>
+        </div>
+        <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;">
     </section>
 
 </main>
 
+<!-- ========================================================================= -->
+<!-- MODAL: IMAGE SCANNER & DIAGNOSIS -->
+<!-- ========================================================================= -->
+<div class="modal-backdrop" id="imageModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>📷</span>
+                <h3>Crop Disease & Pest Image Diagnosis</h3>
+            </div>
+            <button type="button" class="modal-close" id="btnCloseImageModal">✕</button>
+        </div>
 
+        <div class="modal-body">
+            <div class="image-dropzone" id="imageDropzone">
+                <input type="file" id="modalFileInput" accept="image/*" style="display: none;">
+                <div class="dropzone-empty" id="dropzoneEmpty">
+                    <div class="dropzone-icon">🍃</div>
+                    <h4>Drag & Drop Crop Photo or Click to Upload</h4>
+                    <p>Supports clear photos of affected leaves, stems, fruits, or pests (JPEG, PNG, WebP up to 10MB)</p>
+                    <button type="button" class="btn-browse" id="btnBrowseFile">📁 Select Photo / Take Picture</button>
+                </div>
+                <div class="dropzone-preview" id="dropzonePreview" style="display: none;">
+                    <img id="previewImg" src="" alt="Crop Preview">
+                    <button type="button" class="btn-remove-preview" id="btnRemovePreview">✕ Change Photo</button>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 15px;">
+                <label for="imageQuestionInput">Optional Question / Symptoms Observed:</label>
+                <input type="text" id="imageQuestionInput" placeholder="e.g. Yellow leaves on my tomato plant since 3 days">
+            </div>
+
+            <button type="button" class="btn-analyze-image" id="btnRunImageAnalysis">
+                <span>🔍</span> Run AI Crop Diagnosis
+            </button>
+
+            <!-- DIAGNOSTIC RESULT BOX -->
+            <div class="diagnostic-result-card" id="diagnosticResultCard" style="display: none;">
+                <div class="diag-header">
+                    <h4>Diagnostic Findings</h4>
+                    <span class="confidence-badge" id="diagConfidence">85% Confidence</span>
+                </div>
+                <div class="diag-grid">
+                    <div>
+                        <span class="diag-label">DETECTED CROP:</span>
+                        <strong id="diagCrop">Tomato</strong>
+                    </div>
+                    <div>
+                        <span class="diag-label">POSSIBLE ISSUE:</span>
+                        <strong id="diagIssue">Early Blight (Alternaria solani)</strong>
+                    </div>
+                </div>
+                <div class="diag-section">
+                    <span class="diag-label">OBSERVED SYMPTOMS:</span>
+                    <p id="diagSymptoms">Brown circular lesions with concentric rings on lower leaves.</p>
+                </div>
+                <div class="diag-section">
+                    <span class="diag-label">RECOMMENDED NEXT STEPS:</span>
+                    <ul id="diagActions"></ul>
+                </div>
+                <div class="diag-safety" id="diagSafety">
+                    ⚠️ Safety Notice: Always follow product label instructions and wear protective gloves/mask.
+                </div>
+                <button type="button" class="btn-paste-to-chat" id="btnSendDiagnosisToChat">💬 Discuss this Diagnosis in Chat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: GOVERNMENT SCHEMES EXPLORER -->
+<!-- ========================================================================= -->
+<div class="modal-backdrop" id="schemesModal">
+    <div class="modal-card modal-large">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>🏛️</span>
+                <h3>Verified Government Farmer Schemes (ప్రభుత్వ పథకాలు)</h3>
+            </div>
+            <button type="button" class="modal-close" id="btnCloseSchemesModal">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="search-filter-row">
+                <input type="text" id="schemesSearchInput" placeholder="Search scheme by name or benefit (e.g. PM-KISAN, Insurance, Solar)...">
+                <select id="schemeStateSelect">
+                    <option value="">All States / Central</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Odisha">Odisha</option>
+                </select>
+            </div>
+
+            <div class="schemes-list-grid" id="schemesListGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: FARMER HELPLINES DIRECTORY -->
+<!-- ========================================================================= -->
+<div class="modal-backdrop" id="helplinesModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>📞</span>
+                <h3>Official Farmer Helplines & Emergency Support</h3>
+            </div>
+            <button type="button" class="modal-close" id="btnCloseHelplinesModal">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <p class="helpline-intro">Verified toll-free agricultural advisory and insurance helplines. Click on any phone number to call directly from your mobile.</p>
+            <div class="helplines-list-container" id="helplinesListContainer">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AUDIO ELEMENT FOR TTS PLAYBACK -->
+<audio id="ttsAudioPlayer" style="display: none;"></audio>
+
+<!-- FOOTER -->
 <footer>
-
-    <span>🌾 KISAN AI</span>
-
-    <span>
-        Technology for smarter agriculture.
-    </span>
-
+    <div>🌾 <strong>KISAN AI</strong> • Smart Multilingual Agricultural Advisory Platform</div>
+    <div>Built for Indian Farmers • Works Online & Offline • Powered by AI</div>
 </footer>
 
-
 <script src="script.js"></script>
-
 </body>
 </html>

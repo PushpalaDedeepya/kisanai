@@ -1,82 +1,414 @@
 {
+  "version": "2.0.0",
   "crops": {
     "rice": {
-      "name": "Rice",
-      "soil": "Rice grows well in fertile clayey or loamy soil with good water-holding capacity.",
-      "water": "Rice generally needs sufficient water, especially during important growth stages. Avoid unnecessary waterlogging when it is not required.",
-      "tips": [
-        "Use healthy and good-quality seeds.",
-        "Maintain proper spacing between plants.",
-        "Monitor the field regularly for weeds and pests.",
-        "Use fertilizers according to soil requirements."
-      ]
-    },
-    "tomato": {
-      "name": "Tomato",
-      "soil": "Tomato grows well in fertile, well-drained soil rich in organic matter.",
-      "water": "Provide regular and consistent watering. Avoid both prolonged dryness and excessive watering.",
-      "tips": [
-        "Provide adequate sunlight.",
-        "Maintain proper spacing for good air circulation.",
-        "Monitor leaves and fruits regularly for pests and diseases.",
-        "Use balanced nutrients based on soil conditions."
-      ]
+      "name": "Rice (Paddy / వరి / धान)",
+      "crop_category": "Cereals",
+      "suitable_soil": "Fertile clayey loam or silty clay soils with good water retention capacity. Optimum soil pH 5.5 to 7.0.",
+      "sowing_and_spacing": "Kharif sowing in June-July, Rabi in Nov-Dec. Spacing: 20x15 cm or 15x15 cm for SRI method. Seed rate: 20-25 kg/acre (transplanted), 30-35 kg/acre (direct seeded).",
+      "water_and_irrigation": "Submerged/standing water (2-5 cm) needed during tillering and panicle initiation. Critical stages: Tillering, Panicle Initiation, Flowering, and Grain Filling. Drain water 7-10 days before harvest.",
+      "nutrient_and_fertilizer": "NPK recommendation: 40-50 kg Nitrogen, 20-25 kg Phosphorus (P2O5), 20-25 kg Potash (K2O) per acre. Apply Zinc Sulphate 10-15 kg/acre basal. Split Nitrogen: 50% basal, 25% active tillering, 25% panicle initiation.",
+      "common_pests": [
+        {
+          "name": "Stem Borer (కాండం తొలిచే పురుగు / तना छेदक)",
+          "symptoms": "Dead hearts in vegetative stage (central leaf sheath dies and dries up); White ears/white panicles at reproductive stage (chaffy grain heads).",
+          "ipm_practices": "Install pheromone traps (5/acre for monitoring, 10-12/acre for mass trapping). Release Trichogramma japonicum egg parasitoids. Clip seedling leaf tips before transplanting.",
+          "safe_chemical_control": "If dead heart exceeds 10% threshold: Chlorantraniliprole 18.5% SC @ 60 ml/acre in 200L water OR Cartap Hydrochloride 4G granules @ 7-8 kg/acre.",
+          "safety_precautions": "Wear mask and rubber gloves. Do not apply during heavy winds or immediate rainfall risk. Pre-Harvest Interval (PHI): 14 days."
+        },
+        {
+          "name": "Brown Plant Hopper (BPH / సుడి దోమ / भूरा फुदका)",
+          "symptoms": "Circular patches of dried, burnt crop known as 'Hopper Burn', typically at the base of the plant in dense fields with excessive nitrogen.",
+          "ipm_practices": "Create 'alleyways' (1 ft gap every 2 meters) for aeration and sunlight. Avoid excessive urea application. Drain standing water from the field for 3-4 days.",
+          "safe_chemical_control": "If 10-15 hoppers per hill: Pymetrozine 50% WDG @ 120 g/acre OR Trifluflumuron / Dinotefuran 20% SG @ 80-100 g/acre directed towards the plant base.",
+          "safety_precautions": "Direct spray to the base of the crop canopy. Wear protective eyewear. Pre-Harvest Interval (PHI): 21 days."
+        },
+        {
+          "name": "Leaf Folder (ఆకు చుట్టు పురుగు / पत्ती लपेटक)",
+          "symptoms": "Leaves folded longitudinally with white transparent streaks where green tissue has been scraped off.",
+          "ipm_practices": "Pass a rope across the crop canopy during early tillering. Avoid excessive nitrogen fertilizer.",
+          "safe_chemical_control": "If leaf damage > 10%: Chlorantraniliprole 18.5% SC @ 60 ml/acre OR Flubendiamide 39.35% SC @ 20 ml/acre in 200L water.",
+          "safety_precautions": "Wear PPE. Spray in early morning or late evening. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Blast Disease (అగ్గి తెగులు / ब्लास्ट रोग)",
+          "symptoms": "Spindle-shaped elliptical lesions on leaves with brown/reddish borders and grey centers. Neck blast causes blackening and breakage of panicle necks.",
+          "preventive_measures": "Treat seeds with Tricyclazole 75% WP @ 2g/kg seed. Avoid excess nitrogenous fertilizer; apply potash in balanced doses.",
+          "safe_treatment": "At first sign of leaf spots: Tricyclazole 75% WP @ 120-160 g/acre in 200L water OR Isoprothiolane 40% EC @ 300 ml/acre.",
+          "safety_precautions": "Ensure complete canopy coverage. Do not spray during hot midday sun. PHI: 21 days."
+        },
+        {
+          "name": "Bacterial Leaf Blight (BLB / బాక్టీరియల్ ఆకు ఎండు తెగులు)",
+          "symptoms": "Water-soaked wavy lesions starting from leaf tips down the margins, turning yellow-white, with bacterial ooze drops visible in morning dew.",
+          "preventive_measures": "Drain excess water. Avoid clipping seedling tips in BLB-prone areas. Avoid overhead irrigation.",
+          "safe_treatment": "Copper Oxychloride 50% WP @ 300-400 g/acre mixed with Streptocycline @ 6g/acre in 200L water.",
+          "safety_precautions": "Wash hands thoroughly after handling. Wear face mask. PHI: 14 days."
+        },
+        {
+          "name": "Sheath Blight (కాండం కుళ్ళు / పల్లా తెగులు)",
+          "symptoms": "Greenish-grey water-soaked oval or irregular spots on the leaf sheath near the water line, enlarging with brown borders like snakeskin.",
+          "preventive_measures": "Maintain wider plant spacing. Apply balanced NPK with adequate potash. Destroy stubble.",
+          "safe_treatment": "Hexaconazole 5% EC @ 400 ml/acre OR Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 200 ml/acre in 200L water.",
+          "safety_precautions": "Direct spray towards the lower stem and sheath. PHI: 15 days."
+        }
+      ],
+      "weather_sensitivity": "Heavy rain at flowering causes spikelet sterility and grain washing. Prolonged cloudy weather and high humidity (>85%) drastically increases Blast and BLB risks."
     },
     "cotton": {
-      "name": "Cotton",
-      "soil": "Cotton grows well in deep, fertile and well-drained soils.",
-      "water": "Cotton needs adequate moisture during important growth stages, but excessive water should be avoided.",
-      "tips": [
-        "Use suitable varieties for the local climate.",
-        "Monitor regularly for insect pests.",
-        "Keep the field free from excessive weeds.",
-        "Follow recommended fertilizer practices."
-      ]
+      "name": "Cotton (పత్తి / कपास)",
+      "crop_category": "Cash Crops",
+      "suitable_soil": "Deep black cotton soils (vertisols) or fertile well-drained loams with pH 6.5 to 8.0. Sensitive to waterlogging.",
+      "sowing_and_spacing": "Sowing in May-June (irrigated) / June-July (rainfed). Spacing: 90x60 cm or 120x45 cm for Bt hybrids. Seed rate: 1-1.5 packets (450g each) per acre.",
+      "water_and_irrigation": "Sensitive to waterlogging. Critical irrigation stages: Square formation, Flowering, and Boll development. Drip irrigation saves 40-50% water.",
+      "nutrient_and_fertilizer": "NPK: 48-60 kg N, 24 kg P2O5, 24 kg K2O per acre. Split N into 3 doses (basal, 30 days, 60 days). Foliar spray of 2% DAP or 1% 19:19:19 + 1% Potassium Nitrate (13:0:45) at peak flowering.",
+      "common_pests": [
+        {
+          "name": "Pink Bollworm (గులాబీ రంగు కాయ తొలిచే పురుగు / गुलाबी सुंडी)",
+          "symptoms": "Rosette flowers (petals twisted into rosette), premature boll opening, stained lint, small exit holes on mature bolls with damaged seeds.",
+          "ipm_practices": "Install Pink Bollworm pheromone traps (5/acre for monitoring, 8-10/acre for mass trapping). Destroy crop residues immediately after final harvest.",
+          "safe_chemical_control": "If 8 moths/trap/day or 10% rosette flowers: Profenofos 50% EC @ 400 ml/acre OR Emamectin Benzoate 5% SG @ 80-100 g/acre in 200L water.",
+          "safety_precautions": "Never spray without protective respirator mask and gloves. Keep cattle away. PHI: 15-20 days."
+        },
+        {
+          "name": "Sucking Pests (Aphids, Jassids, Whiteflies, Thrips / రసం పీల్చే పురుగులు)",
+          "symptoms": "Leaf curling (downwards in aphids, upwards in thrips/whiteflies), yellowing, honeydew excretion causing sooty mold, leafhopper yellow marginal burning.",
+          "ipm_practices": "Set up yellow sticky traps (whitefly/aphid) and blue sticky traps (thrips) @ 10 traps/acre. Spray 5% Neem Seed Kernel Extract (NSKE) early.",
+          "safe_chemical_control": "If ETL reached: Flonicamid 50% WG @ 60-80 g/acre OR Diafenthiuron 50% WP @ 240 g/acre OR Acetamiprid 20% SP @ 40-50 g/acre in 200L water.",
+          "safety_precautions": "Alternate chemical groups to prevent pesticide resistance. Spray underneath leaves. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Bacterial Blight / Angular Leaf Spot (కోణీయ ఆకుమచ్చ తెగులు)",
+          "symptoms": "Angular water-soaked spots on leaves bounded by veins, black arm lesions on branches, water-soaked round spots on bolls.",
+          "preventive_measures": "Acid delinting of seeds. Avoid excessive nitrogen. Remove crop debris.",
+          "safe_treatment": "Copper Oxychloride 50% WP @ 300g + Streptocycline @ 6-8g per acre in 200L water.",
+          "safety_precautions": "Wear PPE. Ensure thorough coverage. PHI: 14 days."
+        },
+        {
+          "name": "Alternaria Leaf Spot & Grey Mildew (ఆల్టర్నేరియా ఆకుమచ్చ / బూడిద తెగులు)",
+          "symptoms": "Concentric brown target-board rings on leaves leading to premature leaf shedding. Grey mildew produces powdery whitish growth on leaf underside.",
+          "preventive_measures": "Maintain proper plant spacing for aeration. Spray 1% Bordeaux mixture or Mancozeb as prophylactic.",
+          "safe_treatment": "Pyraclostrobin 20% WG @ 100g/acre OR Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 200 ml/acre.",
+          "safety_precautions": "Do not spray in midday heat. Wear mask and eye protection. PHI: 15 days."
+        }
+      ],
+      "weather_sensitivity": "Heavy unseasonal rain during boll bursting discolors lint and rots bolls. High humidity with temperature >30°C triggers heavy bollworm and sucking pest infestations."
     },
-    "groundnut": {
-      "name": "Groundnut",
-      "soil": "Groundnut prefers loose, well-drained sandy loam or loamy soil.",
-      "water": "Provide adequate moisture during germination, flowering and pod development.",
-      "tips": [
-        "Use good-quality seeds.",
-        "Avoid waterlogging.",
-        "Control weeds during early crop growth.",
-        "Monitor the crop for leaf diseases and insect pests."
-      ]
+    "tomato": {
+      "name": "Tomato (టమోటా / टमाटर)",
+      "crop_category": "Vegetables",
+      "suitable_soil": "Well-drained sandy loam or clay loam rich in organic matter. Optimum pH 6.0 to 7.0.",
+      "sowing_and_spacing": "Year-round in three seasons (Kharif, Rabi, Summer). Spacing: 60x45 cm or 75x60 cm for indeterminate varieties. Seed rate: 50-80 g/acre (hybrids).",
+      "water_and_irrigation": "Regular, uniform moisture is essential. Avoid alternate wet-dry cycles which cause Blossom End Rot and fruit cracking. Drip irrigation with fertigation is highly recommended.",
+      "nutrient_and_fertilizer": "NPK: 60-80 kg N, 40-50 kg P2O5, 50-60 kg K2O per acre. Apply Calcium Nitrate 10 kg/acre and Boron 1 kg/acre during flowering to prevent blossom end rot.",
+      "common_pests": [
+        {
+          "name": "Fruit Borer (కాయ తొలిచే పురుగు / फल छेदक - Helicoverpa)",
+          "symptoms": "Circular bore holes in developing and ripe tomato fruits with larval excreta around the entrance.",
+          "ipm_practices": "Plant marigold as a trap crop (1 row marigold for every 16 rows tomato). Install Helilure pheromone traps @ 5/acre.",
+          "safe_chemical_control": "If damage exceeds 5%: Chlorantraniliprole 18.5% SC @ 60 ml/acre OR Spinosad 45% SC @ 60-70 ml/acre in 200L water.",
+          "safety_precautions": "Follow strict Pre-Harvest Interval (PHI): 3 days for Spinosad, 5 days for Chlorantraniliprole before harvesting ripe fruit for consumption."
+        },
+        {
+          "name": "Tomato Leaf Miner (టుటా అబ్సొల్యూటా / Tuta absoluta)",
+          "symptoms": "White blotch/blister-like mines on leaves with dark frass; pin-hole entries in fruits near calyx.",
+          "ipm_practices": "Install Tuta ferolure delta traps @ 12-16 traps/acre. Spray Bacillus thuringiensis (Bt) @ 2g/L.",
+          "safe_chemical_control": "Chlorantraniliprole 18.5% SC @ 60 ml/acre OR Cyantraniliprole 10.26% OD @ 360 ml/acre.",
+          "safety_precautions": "Wear mask and gloves. PHI: 5 days."
+        },
+        {
+          "name": "Whitefly & Sucking Pests (తెల్లదోమ)",
+          "symptoms": "Yellowing of foliage, sticky honeydew, vector for Tomato Leaf Curl Virus (ToLCV) causing stunted crinkled leaves.",
+          "ipm_practices": "Install yellow sticky sheets @ 15-20/acre. Cover nursery beds with 40-mesh nylon nets.",
+          "safe_chemical_control": "Spiromesifen 22.9% SC @ 200 ml/acre OR Diafenthiuron 50% WP @ 240 g/acre.",
+          "safety_precautions": "Spray underside of foliage. PHI: 5 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Early Blight (ముందస్తు ఆకు ఎండు తెగులు / अगेती झुलसा)",
+          "symptoms": "Brown to black spots on older leaves with characteristic concentric rings ('bullseye' pattern), surrounded by a yellow halo.",
+          "preventive_measures": "Mulch the soil surface to prevent soil splash onto lower leaves. Remove lower diseased leaves. Avoid overhead sprinkling.",
+          "safe_treatment": "Mancozeb 75% WP @ 400 g/acre prophylactic OR Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 200 ml/acre in 200L water.",
+          "safety_precautions": "Wear PPE. PHI: 5 days."
+        },
+        {
+          "name": "Late Blight (ఆలస్యపు ఆకు ఎండు తెగులు / पछेती झुलसा)",
+          "symptoms": "Rapidly spreading water-soaked dark irregular patches on leaves and stems with white cottony fungal growth on underside under humid conditions.",
+          "preventive_measures": "Ensure good drainage. Monitor closely during cold humid weather (night <18°C, day <25°C, humidity >80%).",
+          "safe_treatment": "Cymoxanil 8% + Mancozeb 64% WP @ 400 g/acre OR Metalaxyl 8% + Mancozeb 64% WP @ 400 g/acre in 200L water.",
+          "safety_precautions": "Act immediately upon first symptom. PHI: 7 days."
+        },
+        {
+          "name": "Bacterial Wilt (బాక్టీరియల్ వడలు తెగులు)",
+          "symptoms": "Rapid wilting of the entire plant without initial yellowing of leaves. White milky bacterial stream oozes from cut stem in clean water.",
+          "preventive_measures": "Crop rotation with non-solanaceous crops (maize, pulses). Soil solarization. Use resistant varieties.",
+          "safe_treatment": "Drench root zone with Copper Oxychloride 50% WP @ 3g/L + Streptocycline @ 0.5g/L.",
+          "safety_precautions": "Remove and burn wilted plants immediately. Do not contaminate irrigation water."
+        }
+      ],
+      "weather_sensitivity": "Rain + high humidity (>80%) triggers explosive Late Blight and fruit rot. Temperatures >35°C cause extensive flower drop and poor fruit set."
+    },
+    "wheat": {
+      "name": "Wheat (గోధుమ / गेहूं)",
+      "crop_category": "Cereals",
+      "suitable_soil": "Well-drained fertile loamy and clay loam soils with neutral pH (6.5 to 7.5).",
+      "sowing_and_spacing": "Optimum sowing: November 1st to 20th. Spacing: 20-22.5 cm row-to-row. Seed rate: 40-50 kg/acre.",
+      "water_and_irrigation": "4 to 6 irrigations depending on soil. 6 Critical stages: 1. Crown Root Initiation (CRI - 21 days after sowing - most crucial), 2. Tillering (40-45 DAS), 3. Late Jointing (60-65 DAS), 4. Flowering (80-85 DAS), 5. Milking (100-105 DAS), 6. Dough stage (115-120 DAS).",
+      "nutrient_and_fertilizer": "NPK: 48-60 kg N, 24 kg P2O5, 16 kg K2O per acre. Apply 1/3 N + Full P & K at sowing; 1/3 N at CRI stage; 1/3 N at jointing stage. Apply Zinc Sulphate 10 kg/acre basal.",
+      "common_pests": [
+        {
+          "name": "Termites / White Ants (చెదలు / दीमक)",
+          "symptoms": "Drying of seedlings, yellowing and wilting; damaged roots show chewed fiber.",
+          "ipm_practices": "Seed treatment with Chlorpyrifos 20% EC @ 4 ml/kg seed. Avoid un-decomposed farmyard manure.",
+          "safe_chemical_control": "If standing crop affected: Fipronil 0.3% GR @ 8 kg/acre broadcast before irrigation OR Chlorpyrifos 20% EC @ 1.2 L/acre with irrigation water.",
+          "safety_precautions": "Avoid direct skin contact. PHI: 30 days."
+        },
+        {
+          "name": "Wheat Aphid (పేనుబంక / माहू)",
+          "symptoms": "Colonies sucking sap from leaves and earheads during grain filling, causing shrivelled grains.",
+          "ipm_practices": "Encourage ladybird beetles and syrphid fly predators.",
+          "safe_chemical_control": "If >5 aphids/earhead: Thiamethoxam 25% WG @ 40g/acre OR Dimethoate 30% EC @ 300 ml/acre.",
+          "safety_precautions": "Spray during evening to protect pollinating bees. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Yellow / Stripe Rust (పసుపు కుంకుమ తెగులు / पीला रतुआ)",
+          "symptoms": "Yellow powder pustules arranged in parallel stripes along leaf veins, staining fingers yellow when touched.",
+          "preventive_measures": "Grow rust-resistant varieties. Monitor fields in cold humid sub-mountain regions.",
+          "safe_treatment": "Propiconazole 25% EC @ 200 ml/acre in 200L water OR Tebuconazole 25.9% EC @ 200 ml/acre upon first yellow stripe.",
+          "safety_precautions": "Ensure protective mask is worn. PHI: 30 days."
+        },
+        {
+          "name": "Karnal Bunt & Loose Smut (కర్నాల్ బంట్ / कांगियारी)",
+          "symptoms": "Loose smut replaces grains with black powdery mass of fungal spores. Karnal bunt emits fishy odor with partially converted black powdery grains.",
+          "preventive_measures": "Seed treatment with Carboxin 37.5% + Thiram 37.5% DS @ 2.5g/kg seed.",
+          "safe_treatment": "Prophylactic spray of Propiconazole 25% EC @ 200 ml/acre at earhead emergence stage.",
+          "safety_precautions": "Do not consume infected grains. PHI: 30 days."
+        }
+      ],
+      "weather_sensitivity": "Sudden heat spike (>30°C) during February-March causes terminal heat stress, accelerating maturity and causing shrivelled light grains."
     },
     "chilli": {
-      "name": "Chilli",
-      "soil": "Chilli grows well in fertile and well-drained loamy soil.",
-      "water": "Water regularly according to soil moisture and weather conditions. Avoid excessive watering.",
-      "tips": [
-        "Use healthy seedlings.",
-        "Maintain proper spacing.",
-        "Monitor plants for sucking pests.",
-        "Remove severely affected plant parts when appropriate."
-      ]
+      "name": "Chilli (మిరప / मिर्च)",
+      "crop_category": "Spices / Vegetables",
+      "suitable_soil": "Well-drained sandy loam or black soil with good fertility, pH 6.5 to 7.5.",
+      "sowing_and_spacing": "Nursery in June-July, transplant in July-August (Kharif) or Oct-Nov (Rabi). Spacing: 60x60 cm or 75x45 cm. Seed rate: 100-150 g/acre (hybrids).",
+      "water_and_irrigation": "Frequent light irrigations. Never allow water stagnation (causes rapid root rot). Drip irrigation is ideal.",
+      "nutrient_and_fertilizer": "NPK: 60-80 kg N, 30-40 kg P2O5, 40-50 kg K2O per acre. Top dress Nitrogen and Potash in 4 equal splits. Micronutrient spray (Formula-4 / Zinc + Boron) at flowering.",
+      "common_pests": [
+        {
+          "name": "Thrips (తామర పురుగులు / थ्रिप्स - Scirtothrips dorsalis & Black Thrips)",
+          "symptoms": "Upward curling of leaves (boat-shaped), crinkled brittle foliage, brownish silvery patches under leaf surface and on fruits.",
+          "ipm_practices": "Install blue sticky traps @ 20-25/acre. Spray 5% Neem oil (10,000 ppm) @ 2 ml/L early.",
+          "safe_chemical_control": "If heavy infestation: Spinetoram 11.7% SC @ 160-180 ml/acre OR Broflanilide 300 SC @ 20 ml/acre OR Fipronil 5% SC @ 350-400 ml/acre in 200L water.",
+          "safety_precautions": "Alternate modes of action to prevent rapid resistance. Wear PPE. PHI: 5-7 days."
+        },
+        {
+          "name": "Mites (నల్లి / माइट्स - Yellow/Broad Mite)",
+          "symptoms": "Downward curling of leaves (inverted boat shape), elongated petioles ('rat tail' appearance), bronzing of foliage.",
+          "ipm_practices": "Avoid excessive synthetic pyrethroids. Maintain field humidity.",
+          "safe_chemical_control": "Spiromesifen 22.9% SC @ 200 ml/acre OR Fenpyroximate 5% EC @ 300 ml/acre in 200L water.",
+          "safety_precautions": "Spray thoroughly targeting lower leaf surface. PHI: 5 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Dieback & Anthracnose / Fruit Rot (కొమ్మ ఎండు మరియు కాయ కుళ్ళు తెగులు)",
+          "symptoms": "Twigs die from tip downwards (dieback); circular sunken dark blemishes on green and ripe fruits with concentric fungal rings.",
+          "preventive_measures": "Seed treatment with Thiram 3g/kg. Collect and burn infected dried twigs and rotten fruits.",
+          "safe_treatment": "Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 200 ml/acre OR Tebuconazole 25.9% EC @ 200 ml/acre in 200L water.",
+          "safety_precautions": "Wear mask and gloves. PHI: 5 days."
+        },
+        {
+          "name": "Chilli Leaf Curl Virus (ఆకు ముడుత వైరస్)",
+          "symptoms": "Severe curling, puckering and reduction of leaf size, bushy stunted plants with few deformed fruits.",
+          "preventive_measures": "Control whitefly and thrips vectors early using sticky traps and recommended sprays. Rogue out infected plants.",
+          "safe_treatment": "Vector control: Diafenthiuron 50% WP @ 240g/acre. No chemical cures viral infection directly.",
+          "safety_precautions": "Do not compost virus-infected plants. Burn safely."
+        }
+      ],
+      "weather_sensitivity": "Heavy rains and waterlogging cause immediate dieback and Phytophthora root rot. Extended cloudy humid days trigger explosive anthracnose fruit rot."
+    },
+    "groundnut": {
+      "name": "Groundnut (వేరుశనగ / मूंगफली)",
+      "crop_category": "Oilseeds",
+      "suitable_soil": "Well-drained loose, friable sandy loam or red loamy soil with pH 6.0 to 7.5. Loose soil is essential for easy peg penetration.",
+      "sowing_and_spacing": "Kharif: June-July; Rabi/Summer: Nov-Dec. Spacing: 30x10 cm. Seed rate: 45-55 kg kernels/acre.",
+      "water_and_irrigation": "Critical irrigation stages: Flowering, Pegging (35-45 DAS), and Pod development (55-75 DAS). Moisture stress at pegging reduces yield by 50%.",
+      "nutrient_and_fertilizer": "NPK: 10-12 kg N, 20-25 kg P2O5, 20 kg K2O per acre. Mandatory Gypsum application: 150-200 kg/acre at pegging (40-45 DAS) for calcium to develop solid pods without pops.",
+      "common_pests": [
+        {
+          "name": "Red Hairy Caterpillar & Spodoptera (ఎర్ర గొంగళి పురుగు / तंबाकू की सुंडी)",
+          "symptoms": "Gregarious caterpillars defoliate entire plants, leaving only bare stems.",
+          "ipm_practices": "Set up light traps and bonfires at first monsoon rain to kill moths. Dig trenches around field borders to trap marching caterpillars.",
+          "safe_chemical_control": "If larvae are grown: Novaluron 10% EC @ 300 ml/acre OR Emamectin Benzoate 5% SG @ 80-100 g/acre in 200L water.",
+          "safety_precautions": "Wear protective gear. Keep domestic animals away. PHI: 14 days."
+        },
+        {
+          "name": "White Grub (వేరు పురుగు / सफेद लट)",
+          "symptoms": "Larvae feed on underground rootlets and pods, causing sudden wilting and death of patches of plants.",
+          "ipm_practices": "Deep summer ploughing. Seed treatment with Chlorpyrifos 20% EC @ 10 ml/kg seed.",
+          "safe_chemical_control": "Soil application of Fipronil 0.3% GR @ 8-10 kg/acre at sowing or drenching with Chlorpyrifos 20% EC @ 1 L/acre.",
+          "safety_precautions": "Wash skin immediately if exposed. PHI: 30 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Tikka Leaf Spot (తిక్కా ఆకుమచ్చ తెగులు - Early & Late)",
+          "symptoms": "Dark brown circular spots on upper leaf surface with yellow halos (early tikka); small black carbonaceous spots without halos (late tikka).",
+          "preventive_measures": "Seed treatment with Carbendazim 2g/kg seed. Crop rotation with cereals.",
+          "safe_treatment": "Hexaconazole 5% EC @ 300 ml/acre OR Mancozeb 75% WP @ 400 g/acre in 200L water.",
+          "safety_precautions": "Wear face shield. PHI: 15 days."
+        },
+        {
+          "name": "Collar Rot & Stem Rot / Sclerotium (మొదలు కుళ్ళు / తల కుళ్ళు)",
+          "symptoms": "White fan-like fungal mycelium near the soil line with mustard-seed-like sclerotia, causing rotting of stem base and sudden wilting.",
+          "preventive_measures": "Seed treatment with Trichoderma viride @ 4g/kg seed. Apply 1 kg Trichoderma mixed in 100 kg FYM per acre.",
+          "safe_treatment": "Tebuconazole 25.9% EC @ 200 ml/acre drenching around collar region.",
+          "safety_precautions": "Avoid burying collar during weeding. PHI: 20 days."
+        }
+      ],
+      "weather_sensitivity": "Drought during pegging prevents pods from penetrating hard soil. Heavy rains near maturity cause pod sprouting inside the soil."
+    },
+    "maize": {
+      "name": "Maize (మొక్కజొన్న / मक्का)",
+      "crop_category": "Cereals / Coarse Grains",
+      "suitable_soil": "Deep, fertile, well-drained loams and silt loams with pH 6.0 to 7.5. Avoid saline/alkaline and waterlogged soils.",
+      "sowing_and_spacing": "Kharif: June-July; Rabi: Oct-Nov; Spring: Jan-Feb. Spacing: 60x20 cm. Seed rate: 7-8 kg/acre (hybrids).",
+      "water_and_irrigation": "Sensitive to waterlogging and drought. Critical stages: Knee-high stage, Tasseling, Silking, and Grain filling stage.",
+      "nutrient_and_fertilizer": "NPK: 48-60 kg N, 24 kg P2O5, 20 kg K2O per acre. Split N into 3 doses (basal, knee-high, tasseling). Apply Zinc Sulphate 10 kg/acre basal.",
+      "common_pests": [
+        {
+          "name": "Fall Armyworm (FAW / కత్తెర పురుగు / फॉल आर्मीवर्म - Spodoptera frugiperda)",
+          "symptoms": "Elongated papery feeding windows on leaves, extensive ragged holes on leaf whorls with sawdust-like coarse frass.",
+          "ipm_practices": "Install FAW pheromone traps @ 5/acre. Apply dry sand + neem cake powder (9:1) into leaf whorls. Spray Metarhizium anisopliae @ 5g/L.",
+          "safe_chemical_control": "If whorl damage > 10%: Chlorantraniliprole 18.5% SC @ 80 ml/acre OR Emamectin Benzoate 5% SG @ 80-100 g/acre OR Spinetoram 11.7% SC @ 100 ml/acre directed directly into plant whorls.",
+          "safety_precautions": "Direct spray nozzle into the central whorl where larvae hide. Wear mask and gloves. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Turcicum Leaf Blight & Maydis Blight (ఆకు ఎండు తెగులు)",
+          "symptoms": "Long, spindle-shaped boat-shaped greyish-green or brown lesions on leaves, drying up large leaf areas.",
+          "preventive_measures": "Grow tolerant hybrids. Treat seeds with Mancozeb 2.5g/kg seed.",
+          "safe_treatment": "Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 200 ml/acre OR Mancozeb 75% WP @ 400 g/acre in 200L water.",
+          "safety_precautions": "Wear PPE. PHI: 15 days."
+        }
+      ],
+      "weather_sensitivity": "Continuous waterlogging for >24 hours at seedling or flowering stage cuts grain yield drastically."
+    },
+    "potato": {
+      "name": "Potato (బంగాళాదుంప / आलू)",
+      "crop_category": "Tubers / Vegetables",
+      "suitable_soil": "Loose, friable sandy loam rich in organic matter with pH 5.2 to 6.4.",
+      "sowing_and_spacing": "Oct-Nov in Indo-Gangetic plains. Spacing: 60x20 cm. Seed rate: 12-16 quintals/acre of disease-free certified seed tubers.",
+      "water_and_irrigation": "Frequent light irrigations. Critical stages: Stolon formation, Tuber initiation (30-35 DAS), and Tuber bulking. Stop watering 10 days before harvesting for skin curing.",
+      "nutrient_and_fertilizer": "NPK: 60-80 kg N, 40-50 kg P2O5, 50-60 kg K2O per acre. Earthing up at 30-35 days prevents tuber greening.",
+      "common_pests": [
+        {
+          "name": "Potato Tuber Moth & Aphids (దుంప పురుగు మరియు పేనుబంక)",
+          "symptoms": "Moth larvae tunnel into tubers creating black frass-filled galleries. Aphids suck sap and transmit potato leaf roll virus.",
+          "ipm_practices": "Deep earthing up to keep tubers covered under at least 5 cm soil. Treat seed tubers with Thiamethoxam before cold storage.",
+          "safe_chemical_control": "Thiamethoxam 25% WG @ 40g/acre for aphids; Chlorantraniliprole 18.5% SC @ 60 ml/acre in standing crop.",
+          "safety_precautions": "Wear mask and gloves. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Late Blight of Potato (ఆలస్యపు ఆకు ఎండు తెగులు / पछेती झुलसा - Phytophthora infestans)",
+          "symptoms": "Water-soaked dark lesions on leaf tips/margins, purplish black blotches on stems, white mildew under leaves during cool misty mornings, rotten smelly tubers.",
+          "preventive_measures": "Spray prophylactic Mancozeb 75% WP @ 400 g/acre before cloudy foggy weather sets in.",
+          "safe_treatment": "At onset of symptoms: Cymoxanil 8% + Mancozeb 64% WP @ 400 g/acre OR Dimethomorph 50% WP @ 300 g/acre in 200L water.",
+          "safety_precautions": "Spray immediately upon weather warnings. Wear PPE. PHI: 7-10 days."
+        }
+      ],
+      "weather_sensitivity": "Foggy overcast weather with temperatures 10-20°C and RH >85% triggers destructive late blight epidemics within 48-72 hours."
+    },
+    "sugarcane": {
+      "name": "Sugarcane (చెరకు / गन्ना)",
+      "crop_category": "Cash Crops",
+      "suitable_soil": "Deep, rich, well-drained loamy soils with pH 6.5 to 8.0.",
+      "sowing_and_spacing": "Spring (Feb-March) or Autumn (Oct-Nov). Spacing: 90 cm or 120 cm (wide row). Seed rate: 25,000-30,000 two-budded setts/acre.",
+      "water_and_irrigation": "High water requirement. Critical: Formative phase (60-120 days after planting) and grand growth phase. Drip irrigation saves 50% water.",
+      "nutrient_and_fertilizer": "NPK: 100-120 kg N, 30-40 kg P2O5, 40-50 kg K2O per acre. Apply Nitrogen in 3 splits up to 90 days. Earthing up at 90-100 days.",
+      "common_pests": [
+        {
+          "name": "Early Shoot Borer & Top Borer (మొవ్వ తొలిచే పురుగు / तना छेदक)",
+          "symptoms": "Dead hearts in young shoots which can be easily pulled out, emitting foul odor; top borer produces bunchy top appearance.",
+          "ipm_practices": "Trash mulching @ 3 tonnes/acre. Release Trichogramma chilonis egg parasitoids @ 20,000/acre. Light earthing up.",
+          "safe_chemical_control": "Fipronil 0.3% GR @ 10 kg/acre applied in furrows at planting or Chlorantraniliprole 18.5% SC @ 150 ml/acre at 30-45 DAS.",
+          "safety_precautions": "Wear PPE. PHI: 30 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Red Rot (ఎర్ర కుళ్ళు తెగులు / लाल सड़न - Colletotrichum)",
+          "symptoms": "Third or fourth leaf from top yellows and withers; split cane shows internal red discoloration with characteristic white cross patches and alcohol smell.",
+          "preventive_measures": "Use certified red-rot free seed setts. Sett treatment in Carbendazim 0.1% for 15 mins. Strict crop rotation.",
+          "safe_treatment": "No chemical cures internal red rot. Immediately rogue and burn infected clumps. Drench surrounding soil with Copper Oxychloride 3g/L.",
+          "safety_precautions": "Do not take ratoon crop from red-rot infected field."
+        }
+      ],
+      "weather_sensitivity": "Severe drought during formative stage stunts cane height and lowers sucrose accumulation."
+    },
+    "pulses": {
+      "name": "Pulses - Chickpea / Pigeon Pea / Black Gram / Green Gram (పప్పు ధాన్యాలు / दालें)",
+      "crop_category": "Pulses",
+      "suitable_soil": "Well-drained medium to deep loamy or sandy loam soils. Chickpea thrives in black soils with neutral/mildly alkaline pH.",
+      "sowing_and_spacing": "Chickpea: Oct-Nov (30x10 cm); Pigeon Pea: June-July (90x20 cm); Black/Green gram: Kharif & Summer (30x10 cm).",
+      "water_and_irrigation": "Low water requirement. Critical: Pre-flowering and Pod development. Never irrigate during peak flowering (causes flower drop).",
+      "nutrient_and_fertilizer": "NPK: 8-10 kg N, 20-25 kg P2O5, 10 kg K2O per acre. Treat seeds with Rhizobium + PSB bio-fertilizers (200g/acre each) to fix atmospheric nitrogen.",
+      "common_pests": [
+        {
+          "name": "Gram Pod Borer (శనగ కాయ తొలిచే పురుగు / फली छेदक - Helicoverpa armigera)",
+          "symptoms": "Caterpillars feed on foliage initially, then bore circular holes into pods, inserting their head inside while body remains outside.",
+          "ipm_practices": "Install 'T' shaped bird perches @ 20/acre. Pheromone traps @ 5/acre. Spray NPV (Nuclear Polyhedrosis Virus) @ 100 LE/acre.",
+          "safe_chemical_control": "If 1 larva per meter row: Emamectin Benzoate 5% SG @ 80-100 g/acre OR Chlorantraniliprole 18.5% SC @ 60 ml/acre in 200L water.",
+          "safety_precautions": "Wear mask and gloves. Avoid spraying during active bee foraging hours. PHI: 14 days."
+        }
+      ],
+      "common_diseases": [
+        {
+          "name": "Fusarium Wilt (ఎండు తెగులు / उकठा रोग)",
+          "symptoms": "Drooping of petioles and leaves, yellowing and drying up of plant within a few days; dark brown xylem discoloration inside split root.",
+          "preventive_measures": "Seed treatment with Trichoderma viride @ 4g/kg seed. Crop rotation with sorghum/wheat. Deep summer ploughing.",
+          "safe_treatment": "Soil drenching around affected patch with Carbendazim 50% WP @ 2g/L or Copper Oxychloride @ 3g/L.",
+          "safety_precautions": "Wear rubber gloves. PHI: 21 days."
+        }
+      ],
+      "weather_sensitivity": "Rainfall or overcast foggy weather at flowering causes massive flower dropping and induces fungal ascochyta/botrytis blights."
     }
   },
-  "general_farming": {
-    "soil_health": [
-      "Test soil before making major fertilizer decisions.",
-      "Adding suitable organic matter can improve soil structure and fertility.",
-      "Avoid excessive use of fertilizers."
+  "general_farming_principles": {
+    "soil_health_and_fertility": [
+      "Conduct soil testing every 2-3 years through the Soil Health Card scheme before major crop cycles.",
+      "Incorporate 4-5 tonnes of well-decomposed Farmyard Manure (FYM) or 1-2 tonnes vermicompost per acre to enhance organic carbon and beneficial microbes.",
+      "Apply gypsum in oilseeds and pulses to provide essential Calcium and Sulphur for pod and oil synthesis.",
+      "Avoid indiscriminate use of urea without balancing with phosphorus, potash, and micronutrients."
     ],
-    "pest_management": [
-      "Inspect crops regularly for early signs of pests.",
-      "Use integrated pest management practices.",
-      "Prefer appropriate and recommended control methods based on the identified pest.",
-      "Do not use pesticides without following the product label and local agricultural guidance."
+    "integrated_pest_management_ipm": [
+      "Step 1 (Cultural): Deep summer ploughing to expose pupae to sun and predatory birds; maintain clean field bunds.",
+      "Step 2 (Mechanical): Install pheromone traps (5/acre for monitoring, 10-15/acre for mass trapping) and sticky traps (yellow for whiteflies/aphids, blue for thrips).",
+      "Step 3 (Biological): Conserve natural predators (ladybird beetles, spiders, chrysoperla) and apply bio-pesticides (Neem formulations, Trichoderma, Bacillus thuringiensis, Beauveria bassiana).",
+      "Step 4 (Chemical): Use targeted, approved crop-protection chemicals strictly when Economic Threshold Levels (ETL) are breached, strictly respecting verified dosage, PPE, and Pre-Harvest Intervals (PHI)."
     ],
-    "water_management": [
-      "Irrigate according to crop stage, soil condition and weather.",
-      "Avoid unnecessary over-irrigation.",
-      "Use efficient irrigation methods where practical."
+    "weather_smart_irrigation": [
+      "Check 24-48 hour rainfall forecasts before scheduling irrigation to save energy, water, and prevent root waterlogging.",
+      "Irrigate during early morning or evening hours to minimize evaporation losses.",
+      "Adopt micro-irrigation (drip/sprinkler) under PMKSY subsidies to achieve up to 50% water savings and 20-30% yield enhancements."
     ],
-    "weather": [
-      "Check local weather conditions before irrigation or spraying.",
-      "Heavy rain can increase the risk of waterlogging and some crop diseases.",
-      "Strong winds and extreme temperatures can affect crop growth."
+    "chemical_pesticide_safety_rules": [
+      "Always verify that the active ingredient and formulation are officially recommended for the specific crop and target pest.",
+      "Wear mandatory Personal Protective Equipment (PPE): respirator mask, chemical-resistant gloves, eye goggles, and full-sleeved clothing.",
+      "Never spray against the wind direction, during high winds (>15 km/h), or when rainfall is expected within 4-6 hours.",
+      "Do not eat, drink, or smoke while handling agricultural chemicals. Wash hands and face thoroughly with soap after spraying.",
+      "Strictly respect the Pre-Harvest Interval (PHI) between the final chemical spray and crop harvest for safe food consumption.",
+      "Store all crop protection products in original containers locked safely away from children, livestock, and food items."
     ]
   }
 }
