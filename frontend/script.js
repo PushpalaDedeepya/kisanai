@@ -225,20 +225,6 @@ function renderQuickPrompts(lang) {
         }
         return `<button type="button" class="prompt-chip" data-prompt="${p.prompt}">${p.label}</button>`;
     }).join("");
-
-    // Re-bind click events
-    promptsContainer.querySelectorAll(".prompt-chip").forEach(chip => {
-        chip.addEventListener("click", function () {
-            const promptText = this.getAttribute("data-prompt");
-            const action = this.getAttribute("data-action");
-            if (action === "open-scanner") {
-                openModal("imageModal");
-            } else if (promptText) {
-                document.getElementById("chatTextInput").value = promptText;
-                sendChatMessage();
-            }
-        });
-    });
 }
 
 function updateWelcomeMessage(lang) {
@@ -530,9 +516,32 @@ let _backendAudioEl = null;
  * ONLY used for voice output — the displayed text is NOT modified.
  */
 function cleanTextForTTS(rawText) {
+    if (!rawText) return "";
+
     let t = rawText;
 
-    // 0. Decode HTML entities (data-text stores escaped HTML, e.g. &quot; &#039; &amp;)
+    // 0. Handle object or JSON string input (extract user-facing text only)
+    if (typeof t === "object" && t !== null) {
+        t = t.answer || t.advisory || t.text || t.message || t.response || "";
+    } else if (typeof t === "string") {
+        const trimmed = t.trim();
+        if ((trimmed.startsWith("{") && trimmed.endsWith("}")) || (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+            try {
+                const parsed = JSON.parse(trimmed);
+                if (typeof parsed === "object" && parsed !== null) {
+                    t = parsed.answer || parsed.advisory || parsed.text || parsed.message || parsed.response || trimmed;
+                }
+            } catch (e) {
+                // Not valid JSON, proceed with string
+            }
+        }
+    }
+
+    if (typeof t !== "string") {
+        t = String(t || "");
+    }
+
+    // 1. Decode HTML entities (data-text stores escaped HTML, e.g. &quot; &#039; &amp;)
     t = t.replace(/&quot;/g, '"')
           .replace(/&#039;/g, "'")
           .replace(/&amp;/g, "&")
@@ -541,20 +550,29 @@ function cleanTextForTTS(rawText) {
           .replace(/&nbsp;/g, " ")
           .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
 
-    // 1. Strip HTML tags
+    // 2. Strip HTML tags
     t = t.replace(/<[^>]+>/g, " ");
 
-    // 2. Strip URLs
-    t = t.replace(/https?:\/\/\S+/g, " ");
+    // 3. Strip URLs, file paths, IP addresses
+    t = t.replace(/https?:\/\/\S+/gi, " ");
+    t = t.replace(/file:\/\/\S+/gi, " ");
+    t = t.replace(/\b[A-Za-z]:\\[\w\\.-]+/g, " ");
+    t = t.replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?::\d+)?\b/g, " ");
 
-    // 3. Strip markdown code fences and inline code
+    // 4. Strip internal JSON keys, metadata, and variables
+    t = t.replace(/"?(?:answer|advisory|session_id|weather_summary|confidence_score|crop_detected|observed_symptoms|recommended_actions|possible_issue|mode|language|location)"?\s*:\s*/gi, " ");
+    t = t.replace(/\b(?:VERIFIED AGRICULTURAL ADVISOR|AI GENERATED|IMAGE DIAGNOSIS|OFFLINE ADVISORY|OFFLINE MODE|Listen Aloud|Stop Speaking|Copy Advisory|Copy Text)\b/gi, " ");
+    t = t.replace(/\[(?:TTS|TTS Backend|DEBUG|INFO|ERROR|WARN|LOG)[^\]]*\]/gi, " ");
+    t = t.replace(/\b(?:console\.(?:log|warn|error|info)|session-[a-z0-9]+)\b/gi, " ");
+
+    // 5. Strip markdown code fences and inline code
     t = t.replace(/```[\s\S]*?```/g, " ");
     t = t.replace(/`[^`]*`/g, " ");
 
-    // 4. Strip markdown headings (# Heading)
+    // 6. Strip markdown headings (# Heading)
     t = t.replace(/^#{1,6}\s+/gm, "");
 
-    // 5. Convert markdown bold/italic markers — extract content
+    // 7. Convert markdown bold/italic markers — extract content
     //    e.g. **Word** → Word, *Word* → Word, __Word__ → Word, _Word_ → Word
     t = t.replace(/\*\*\*([^*]+)\*\*\*/g, "$1");
     t = t.replace(/\*\*([^*]+)\*\*/g, "$1");
@@ -562,39 +580,30 @@ function cleanTextForTTS(rawText) {
     t = t.replace(/__([^_]+)__/g, "$1");
     t = t.replace(/_([^_]+)_/g, "$1");
 
-    // 6. Strip table separator rows (|---|---|)
+    // 8. Strip table separator rows (|---|---|) and pipe delimiters
     t = t.replace(/\|[\s\-:]+\|[\s\-|:]+/g, " ");
-
-    // 7. Strip pipe characters (table delimiters)
     t = t.replace(/\|/g, " ");
-
-    // 8. Strip remaining special markdown/symbol characters
-    //    (keep periods, commas, native-script punctuation for natural speech)
-    t = t.replace(/[\\#~=`^<>{}[\]]/g, " ");
 
     // 9. Strip bullet/list markers at line start
     t = t.replace(/^[\s]*[-*•·]\s+/gm, "");
     t = t.replace(/^\s*\d+\.\s+/gm, "");
 
-    // 10. Strip emojis (Unicode emoji ranges)
-    t = t.replace(/[\u{1F000}-\u{1FFFF}]/gu, "");
-    t = t.replace(/[\u{2600}-\u{27BF}]/gu, "");
-    t = t.replace(/[\u{FE00}-\u{FEFF}]/gu, "");
-    t = t.replace(/[\u{1F300}-\u{1F9FF}]/gu, "");
-    t = t.replace(/[\u{1FA00}-\u{1FA9F}]/gu, "");
+    // 10. Strip emojis (Unicode emoji property and Unicode ranges fallback)
+    try {
+        t = t.replace(/\p{Extended_Pictographic}/gu, "");
+        t = t.replace(/\p{Emoji}/gu, "");
+    } catch (e) {
+        t = t.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FA9F}]/gu, "");
+    }
 
-    // 11. Strip standalone repeated punctuation/dashes (table separators, hr lines)
+    // 11. Strip remaining special symbols, brackets, braces, quotes, slashes, repeated dashes
+    t = t.replace(/[\\#~=`^<>{}[\]%$@*_+]/g, " ");
+    t = t.replace(/["']/g, "");
     t = t.replace(/[-=_]{2,}/g, " ");
 
-    // 12. Safety: strip any remaining lone * or _ characters
-    t = t.replace(/[*_]/g, " ");
-
-    // 13. Replace underscores within words with a space so it reads naturally
-    //     (already caught by step 12, kept for safety)
-    // t = t.replace(/_/g, " ");
-
-    // 14. Collapse multiple whitespace / newlines into natural pauses
+    // 12. Collapse multiple whitespace / newlines into natural pauses
     t = t.replace(/\r?\n+/g, ". ");
+    t = t.replace(/\.{2,}/g, ".");
     t = t.replace(/\s{2,}/g, " ");
     t = t.trim();
 
@@ -618,8 +627,10 @@ function stopAllTTS() {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
     }
-    // Stop backend audio element
+    // Stop backend audio element safely without triggering error fallback
     if (_backendAudioEl) {
+        _backendAudioEl.onended = null;
+        _backendAudioEl.onerror = null;
         _backendAudioEl.pause();
         _backendAudioEl.src = "";
     }
@@ -688,7 +699,7 @@ function speakTextAloud(text, language, triggerBtn) {
 function _useBrowserTTS(cleanText, speechCode, onSpeechEnd) {
     if (!('speechSynthesis' in window)) {
         console.warn("[TTS] Browser SpeechSynthesis not available.");
-        onSpeechEnd();
+        if (onSpeechEnd) onSpeechEnd();
         return;
     }
 
@@ -701,10 +712,14 @@ function _useBrowserTTS(cleanText, speechCode, onSpeechEnd) {
     utterance.onend = onSpeechEnd;
     utterance.onerror = function (e) {
         console.warn("[TTS] Browser SpeechSynthesis error:", e.error);
-        onSpeechEnd();
+        if (onSpeechEnd) onSpeechEnd();
     };
 
+    let hasSpoken = false;
     function doSpeak() {
+        if (hasSpoken) return;
+        hasSpoken = true;
+
         const voices = window.speechSynthesis.getVoices();
         console.log("[TTS] Available voices count:", voices.length);
 
@@ -728,11 +743,17 @@ function _useBrowserTTS(cleanText, speechCode, onSpeechEnd) {
     if (voices && voices.length > 0) {
         doSpeak();
     } else {
-        // Voices not loaded yet — use onvoiceschanged ONCE, no setTimeout race
+        // Voices not loaded yet — use onvoiceschanged ONCE
         window.speechSynthesis.onvoiceschanged = function () {
             window.speechSynthesis.onvoiceschanged = null;
             doSpeak();
         };
+        // Fallback in case onvoiceschanged does not fire
+        setTimeout(function () {
+            if (!hasSpoken) {
+                doSpeak();
+            }
+        }, 200);
     }
 }
 
@@ -741,7 +762,9 @@ async function streamAudioFromBackend(text, language, onEndCallback, onFailCallb
         const audioEl = document.getElementById("ttsAudioPlayer");
         _backendAudioEl = audioEl;
 
-        // Pause any previous audio on this element
+        // Pause and clean up any previous handlers safely
+        audioEl.onended = null;
+        audioEl.onerror = null;
         audioEl.pause();
         audioEl.src = "";
 
@@ -788,12 +811,16 @@ async function streamAudioFromBackend(text, language, onEndCallback, onFailCallb
 
         audioEl.onended = function () {
             console.log("[TTS Backend] Audio playback ended.");
+            audioEl.onended = null;
+            audioEl.onerror = null;
             URL.revokeObjectURL(audioUrl);
-            if (onEndCallback) onEndCallback();
             _backendAudioEl = null;
+            if (onEndCallback) onEndCallback();
         };
         audioEl.onerror = function (e) {
             console.error("[TTS Backend] Audio element error during playback:", e);
+            audioEl.onended = null;
+            audioEl.onerror = null;
             URL.revokeObjectURL(audioUrl);
             _backendAudioEl = null;
             // Playback failed — fall back to browser
@@ -806,6 +833,8 @@ async function streamAudioFromBackend(text, language, onEndCallback, onFailCallb
                 console.log("[TTS Backend] audio.play() started successfully.");
             }).catch(function (playErr) {
                 console.error("[TTS Backend] audio.play() rejected:", playErr);
+                audioEl.onended = null;
+                audioEl.onerror = null;
                 URL.revokeObjectURL(audioUrl);
                 _backendAudioEl = null;
                 if (onFailCallback) onFailCallback();
@@ -858,11 +887,14 @@ function initializeChatEvents() {
         updateWelcomeMessage(currentSelectedLanguage);
     });
 
-    // Quick Prompts chips
-    document.querySelectorAll(".prompt-chip").forEach(chip => {
-        chip.addEventListener("click", function () {
-            const promptText = this.getAttribute("data-prompt");
-            const action = this.getAttribute("data-action");
+    // Quick Prompts chips (Delegated click handler ensures prompt is sent exactly once)
+    const promptsContainer = document.querySelector(".prompts-scroll");
+    if (promptsContainer) {
+        promptsContainer.addEventListener("click", function (e) {
+            const chip = e.target.closest(".prompt-chip");
+            if (!chip) return;
+            const promptText = chip.getAttribute("data-prompt");
+            const action = chip.getAttribute("data-action");
             if (action === "open-scanner") {
                 openModal("imageModal");
             } else if (promptText) {
@@ -870,20 +902,24 @@ function initializeChatEvents() {
                 sendChatMessage();
             }
         });
-    });
+    }
 
-    // Delegated actions for Listen / Copy buttons
+    // Delegated actions for Listen / Copy buttons (used by both Online and Offline modes)
     document.getElementById("messageStream").addEventListener("click", function (e) {
-        if (e.target.classList.contains("btn-speak")) {
-            const text = e.target.getAttribute("data-text");
-            speakTextAloud(text, currentSelectedLanguage, e.target);
-        } else if (e.target.classList.contains("btn-copy")) {
-            const bubble = e.target.closest(".message-bubble");
-            const content = bubble.querySelector(".bubble-content").innerText;
+        const speakBtn = e.target.closest(".btn-speak");
+        const copyBtn = e.target.closest(".btn-copy");
+        if (speakBtn) {
+            const bubble = speakBtn.closest(".message-bubble");
+            const bubbleText = bubble ? bubble.querySelector(".bubble-content").innerText : "";
+            const text = speakBtn.getAttribute("data-text") || bubbleText;
+            speakTextAloud(text, currentSelectedLanguage, speakBtn);
+        } else if (copyBtn) {
+            const bubble = copyBtn.closest(".message-bubble");
+            const content = bubble ? bubble.querySelector(".bubble-content").innerText : "";
             navigator.clipboard.writeText(content).then(() => {
-                const originalText = e.target.textContent;
-                e.target.textContent = "✅ Copied!";
-                setTimeout(() => { e.target.textContent = originalText; }, 2000);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = "✅ Copied!";
+                setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
             });
         }
     });
