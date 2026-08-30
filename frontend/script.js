@@ -504,56 +504,318 @@ function stopSpeechRecognition() {
 // ------------------------------------------------------------------------------
 // VOICE OUTPUT (TEXT-TO-SPEECH)
 // ------------------------------------------------------------------------------
-function speakTextAloud(text, language) {
+
+// TTS Language codes for voice output (same map as speech recognition)
+const TTS_LANG_CODES = {
+    "English": "en-IN",
+    "Telugu": "te-IN",
+    "Hindi": "hi-IN",
+    "Tamil": "ta-IN",
+    "Kannada": "kn-IN",
+    "Malayalam": "ml-IN",
+    "Marathi": "mr-IN",
+    "Bengali": "bn-IN",
+    "Gujarati": "gu-IN",
+    "Punjabi": "pa-IN"
+};
+
+// Track which button is currently active for speech
+let _activeSpeakBtn = null;
+let _activeSpeakUtterance = null;
+let _backendAudioEl = null;
+
+/**
+ * Clean text for TTS — remove all markdown, symbols, emojis, URLs, table
+ * separators, HTML tags, code blocks, and other non-speech content.
+ * ONLY used for voice output — the displayed text is NOT modified.
+ */
+function cleanTextForTTS(rawText) {
+    let t = rawText;
+
+    // 0. Decode HTML entities (data-text stores escaped HTML, e.g. &quot; &#039; &amp;)
+    t = t.replace(/&quot;/g, '"')
+          .replace(/&#039;/g, "'")
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
+
+    // 1. Strip HTML tags
+    t = t.replace(/<[^>]+>/g, " ");
+
+    // 2. Strip URLs
+    t = t.replace(/https?:\/\/\S+/g, " ");
+
+    // 3. Strip markdown code fences and inline code
+    t = t.replace(/```[\s\S]*?```/g, " ");
+    t = t.replace(/`[^`]*`/g, " ");
+
+    // 4. Strip markdown headings (# Heading)
+    t = t.replace(/^#{1,6}\s+/gm, "");
+
+    // 5. Convert markdown bold/italic markers — extract content
+    //    e.g. **Word** → Word, *Word* → Word, __Word__ → Word, _Word_ → Word
+    t = t.replace(/\*\*\*([^*]+)\*\*\*/g, "$1");
+    t = t.replace(/\*\*([^*]+)\*\*/g, "$1");
+    t = t.replace(/\*([^*]+)\*/g, "$1");
+    t = t.replace(/__([^_]+)__/g, "$1");
+    t = t.replace(/_([^_]+)_/g, "$1");
+
+    // 6. Strip table separator rows (|---|---|)
+    t = t.replace(/\|[\s\-:]+\|[\s\-|:]+/g, " ");
+
+    // 7. Strip pipe characters (table delimiters)
+    t = t.replace(/\|/g, " ");
+
+    // 8. Strip remaining special markdown/symbol characters
+    //    (keep periods, commas, native-script punctuation for natural speech)
+    t = t.replace(/[\\#~=`^<>{}[\]]/g, " ");
+
+    // 9. Strip bullet/list markers at line start
+    t = t.replace(/^[\s]*[-*•·]\s+/gm, "");
+    t = t.replace(/^\s*\d+\.\s+/gm, "");
+
+    // 10. Strip emojis (Unicode emoji ranges)
+    t = t.replace(/[\u{1F000}-\u{1FFFF}]/gu, "");
+    t = t.replace(/[\u{2600}-\u{27BF}]/gu, "");
+    t = t.replace(/[\u{FE00}-\u{FEFF}]/gu, "");
+    t = t.replace(/[\u{1F300}-\u{1F9FF}]/gu, "");
+    t = t.replace(/[\u{1FA00}-\u{1FA9F}]/gu, "");
+
+    // 11. Strip standalone repeated punctuation/dashes (table separators, hr lines)
+    t = t.replace(/[-=_]{2,}/g, " ");
+
+    // 12. Safety: strip any remaining lone * or _ characters
+    t = t.replace(/[*_]/g, " ");
+
+    // 13. Replace underscores within words with a space so it reads naturally
+    //     (already caught by step 12, kept for safety)
+    // t = t.replace(/_/g, " ");
+
+    // 14. Collapse multiple whitespace / newlines into natural pauses
+    t = t.replace(/\r?\n+/g, ". ");
+    t = t.replace(/\s{2,}/g, " ");
+    t = t.trim();
+
+    return t;
+}
+
+/**
+ * Reset the given speak button back to its default "Listen Aloud" state.
+ */
+function _resetSpeakButton(btn) {
+    if (!btn) return;
+    btn.textContent = "🔊 Listen Aloud";
+    btn.title = "Listen Aloud";
+}
+
+/**
+ * Stop all active TTS (browser + backend audio) and reset the active button.
+ */
+function stopAllTTS() {
+    // Stop browser SpeechSynthesis
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+    }
+    // Stop backend audio element
+    if (_backendAudioEl) {
+        _backendAudioEl.pause();
+        _backendAudioEl.src = "";
+    }
+    _resetSpeakButton(_activeSpeakBtn);
+    _activeSpeakBtn = null;
+    _activeSpeakUtterance = null;
+}
+
+/**
+ * Main TTS entry point. Called by the Listen Aloud button click handler.
+ * Handles toggle (start / stop), single-active enforcement, language, and clean text.
+ */
+function speakTextAloud(text, language, triggerBtn) {
     if (!text || !text.trim()) return;
 
-    // Clean emojis and markdown characters from spoken string
-    const cleanText = text.replace(/[*#•`~_\-\[\]\(\)]/g, " ").replace(/\s+/g, " ").trim();
+    // If this button is already the active speaker → STOP
+    if (_activeSpeakBtn && _activeSpeakBtn === triggerBtn) {
+        stopAllTTS();
+        return;
+    }
 
-    // 1. Try Browser Native SpeechSynthesis
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Stop ongoing speech
+    // Stop any other currently active speech first
+    stopAllTTS();
 
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        const speechCode = SPEECH_LANG_CODES[language] || "en-IN";
-        utterance.lang = speechCode;
-        utterance.rate = 0.95; // Slightly slower for clear agricultural comprehension
+    // Mark this button as active
+    _activeSpeakBtn = triggerBtn || null;
+    if (_activeSpeakBtn) {
+        _activeSpeakBtn.textContent = "⏹️ Stop Speaking";
+        _activeSpeakBtn.title = "Stop Speaking";
+    }
 
-        // Look for regional voices
+    const cleanText = cleanTextForTTS(text);
+    if (!cleanText) {
+        _resetSpeakButton(_activeSpeakBtn);
+        _activeSpeakBtn = null;
+        return;
+    }
+
+    const speechCode = TTS_LANG_CODES[language] || "en-IN";
+    console.log("[TTS] Speaking language:", language, "| code:", speechCode);
+    console.log("[TTS] Clean text preview:", cleanText.substring(0, 120));
+
+    // Snapshot the active button at this moment (avoids stale closure)
+    const activeBtn = _activeSpeakBtn;
+
+    function onSpeechEnd() {
+        if (_activeSpeakBtn === activeBtn) {
+            _resetSpeakButton(_activeSpeakBtn);
+            _activeSpeakBtn = null;
+            _activeSpeakUtterance = null;
+        }
+    }
+
+    // Try backend TTS FIRST (gTTS is language-accurate).
+    // Only fall back to browser SpeechSynthesis if backend fails.
+    streamAudioFromBackend(cleanText, language, onSpeechEnd, function fallbackToBrowser() {
+        console.warn("[TTS] Backend failed — falling back to browser SpeechSynthesis");
+        _useBrowserTTS(cleanText, speechCode, onSpeechEnd);
+    });
+}
+
+/**
+ * Use browser SpeechSynthesis. Voice selection waits for voices to load
+ * (single attempt — no duplicate-fire race condition).
+ */
+function _useBrowserTTS(cleanText, speechCode, onSpeechEnd) {
+    if (!('speechSynthesis' in window)) {
+        console.warn("[TTS] Browser SpeechSynthesis not available.");
+        onSpeechEnd();
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = speechCode;
+    utterance.rate = 0.92;
+
+    utterance.onend = onSpeechEnd;
+    utterance.onerror = function (e) {
+        console.warn("[TTS] Browser SpeechSynthesis error:", e.error);
+        onSpeechEnd();
+    };
+
+    function doSpeak() {
         const voices = window.speechSynthesis.getVoices();
-        const regionalVoice = voices.find(v => v.lang === speechCode || v.lang.startsWith(speechCode.split('-')[0]));
-        if (regionalVoice) {
-            utterance.voice = regionalVoice;
+        console.log("[TTS] Available voices count:", voices.length);
+
+        // Try exact match first (e.g. "te-IN"), then language prefix (e.g. "te")
+        const langPrefix = speechCode.split("-")[0];
+        let chosen = voices.find(v => v.lang === speechCode);
+        if (!chosen) chosen = voices.find(v => v.lang.startsWith(langPrefix));
+        if (chosen) {
+            console.log("[TTS] Selected voice:", chosen.name, chosen.lang);
+            utterance.voice = chosen;
+        } else {
+            console.warn("[TTS] No matching voice for", speechCode, "— letting browser pick");
+            // Do NOT set utterance.voice; let the browser use its lang= setting
         }
 
-        utterance.onerror = function (e) {
-            console.warn("Browser SpeechSynthesis failed, falling back to backend gTTS stream:", e);
-            streamAudioFromBackend(cleanText, language);
-        };
-
+        _activeSpeakUtterance = utterance;
         window.speechSynthesis.speak(utterance);
+    }
+
+    const voices = window.speechSynthesis.getVoices();
+    if (voices && voices.length > 0) {
+        doSpeak();
     } else {
-        streamAudioFromBackend(cleanText, language);
+        // Voices not loaded yet — use onvoiceschanged ONCE, no setTimeout race
+        window.speechSynthesis.onvoiceschanged = function () {
+            window.speechSynthesis.onvoiceschanged = null;
+            doSpeak();
+        };
     }
 }
 
-async function streamAudioFromBackend(text, language) {
+async function streamAudioFromBackend(text, language, onEndCallback, onFailCallback) {
     try {
         const audioEl = document.getElementById("ttsAudioPlayer");
+        _backendAudioEl = audioEl;
+
+        // Pause any previous audio on this element
+        audioEl.pause();
+        audioEl.src = "";
+
+        console.log("[TTS Backend] Requesting /voice/speak — lang:", language, "| chars:", text.length);
+
         const res = await fetch(`${API_BASE}/voice/speak`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: text, language: language })
         });
 
-        if (!res.ok) throw new Error("TTS audio request failed");
+        console.log("[TTS Backend] HTTP status:", res.status, "| Content-Type:", res.headers.get("content-type"));
+
+        if (!res.ok) {
+            console.error("[TTS Backend] Non-OK response:", res.status);
+            _backendAudioEl = null;
+            if (onFailCallback) onFailCallback();
+            return;
+        }
+
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("audio")) {
+            // Backend returned something that isn't audio (e.g. JSON error)
+            const errText = await res.text();
+            console.error("[TTS Backend] Expected audio, got:", contentType, "| body:", errText.substring(0, 200));
+            _backendAudioEl = null;
+            if (onFailCallback) onFailCallback();
+            return;
+        }
 
         const blob = await res.blob();
+        console.log("[TTS Backend] Audio blob size:", blob.size, "bytes | type:", blob.type);
+
+        if (blob.size < 100) {
+            // Suspiciously small — treat as failure
+            console.error("[TTS Backend] Audio blob too small, likely an error response.");
+            _backendAudioEl = null;
+            if (onFailCallback) onFailCallback();
+            return;
+        }
+
         const audioUrl = URL.createObjectURL(blob);
         audioEl.src = audioUrl;
-        audioEl.play();
+
+        audioEl.onended = function () {
+            console.log("[TTS Backend] Audio playback ended.");
+            URL.revokeObjectURL(audioUrl);
+            if (onEndCallback) onEndCallback();
+            _backendAudioEl = null;
+        };
+        audioEl.onerror = function (e) {
+            console.error("[TTS Backend] Audio element error during playback:", e);
+            URL.revokeObjectURL(audioUrl);
+            _backendAudioEl = null;
+            // Playback failed — fall back to browser
+            if (onFailCallback) onFailCallback();
+        };
+
+        const playPromise = audioEl.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log("[TTS Backend] audio.play() started successfully.");
+            }).catch(function (playErr) {
+                console.error("[TTS Backend] audio.play() rejected:", playErr);
+                URL.revokeObjectURL(audioUrl);
+                _backendAudioEl = null;
+                if (onFailCallback) onFailCallback();
+            });
+        }
+
     } catch (e) {
-        console.error("Backend TTS stream error:", e);
+        console.error("[TTS Backend] Fetch/network error:", e);
+        _backendAudioEl = null;
+        if (onFailCallback) onFailCallback();
     }
 }
 
@@ -614,7 +876,7 @@ function initializeChatEvents() {
     document.getElementById("messageStream").addEventListener("click", function (e) {
         if (e.target.classList.contains("btn-speak")) {
             const text = e.target.getAttribute("data-text");
-            speakTextAloud(text, currentSelectedLanguage);
+            speakTextAloud(text, currentSelectedLanguage, e.target);
         } else if (e.target.classList.contains("btn-copy")) {
             const bubble = e.target.closest(".message-bubble");
             const content = bubble.querySelector(".bubble-content").innerText;
@@ -731,19 +993,79 @@ function scrollToBottom() {
 
 function getClientOfflineAdvice(question, language) {
     const qLower = question.toLowerCase();
-    for (const item of clientOfflineKnowledge) {
-        if (item.keywords.some(k => qLower.includes(k.toLowerCase()))) {
-            return item.answer;
+
+    // Per-language translations of each offline knowledge topic
+    const OFFLINE_ANSWERS = {
+        fertilizer: {
+            "Telugu": "🌾 పంట ఎరువుల నిర్వహణ:\n• ఎకరాకు సిఫారసు NPK: 40-50 కేజీ నత్రజని, 20-25 కేజీ భాస్వరం, 20-25 కేజీ పొటాష్.\n• బేసల్ డోస్: మొత్తం భాస్వరం, 50% నత్రజని మరియు 50% పొటాష్‌ను భూమి సిద్ధం చేసేటప్పుడు వేయండి.\n• టాప్ డ్రెస్సింగ్: మిగిలిన నత్రజనిని మొకాల దశలలో వేయండి.\n• జింక్ లోపాన్ని నివారించడానికి జింక్ సల్ఫేట్ 10-15 కేజీ/ఎకరా వేయండి.",
+            "Hindi": "🌾 फसल उर्वरक प्रबंधन:\n• प्रति एकड़ अनुशंसित NPK: 40-50 किग्रा नाइट्रोजन, 20-25 किग्रा फास्फोरस, 20-25 किग्रा पोटाश.\n• बेसल डोज: अंतिम जुताई के समय सभी फास्फोरस, 50% नाइट्रोजन और 50% पोटाश डालें.\n• टॉप ड्रेसिंग: शेष नाइट्रोजन को कल्ले फूटने और बाली निकलने पर दो किश्तों में डालें.\n• जिंक की कमी रोकने हेतु जिंक सल्फेट 10-15 किग्रा/एकड़ डालें.",
+            "Tamil": "🌾 பயிர் உர மேலாண்மை:\n• ஏக்கருக்கு பரிந்துரைக்கப்பட்ட NPK: 40-50 கிலோ நைட்ரஜன், 20-25 கிலோ பாஸ்பரஸ், 20-25 கிலோ பொட்டாஷ்.\n• அடி உரம்: இறுதி உழவின்போது அனைத்து பாஸ்பரஸ், 50% நைட்ரஜன் மற்றும் 50% பொட்டாஷ் இடவும்.\n• மேல் உரம்: மீதமுள்ள நைட்ரஜனை தனிக்கட்டு மற்றும் கதிர் தோற்றும் நிலையில் இடவும்.\n• துத்தநாக குறைபாட்டை தடுக்க ஏக்கருக்கு 10-15 கிலோ துத்தநாக சல்பேட் இடவும்.",
+            "Kannada": "🌾 ಬೆಳೆ ಗೊಬ್ಬರ ನಿರ್ವಹಣೆ:\n• ಎಕರೆಗೆ ಶಿಫಾರಸು NPK: 40-50 ಕೆಜಿ ಸಾರಜನಕ, 20-25 ಕೆಜಿ ರಂಜಕ, 20-25 ಕೆಜಿ ಪೊಟ್ಯಾಷ್.\n• ತಳ ಗೊಬ್ಬರ: ಭೂಮಿ ಸಿದ್ಧಪಡಿಸುವಾಗ ಎಲ್ಲಾ ರಂಜಕ, 50% ಸಾರಜನಕ ಮತ್ತು 50% ಪೊಟ್ಯಾಷ್ ಹಾಕಿ.\n• ಮೇಲ್ ಗೊಬ್ಬರ: ಉಳಿದ ಸಾರಜನಕವನ್ನು ಸ್ತಂಭ ಮತ್ತು ತೆನೆ ಹಂತಗಳಲ್ಲಿ ನೀಡಿ.\n• ಸತುವಿನ ಕೊರತೆ ತಡೆಯಲು ಎಕರೆಗೆ 10-15 ಕೆಜಿ ಸತು ಸಲ್ಫೇಟ್ ಹಾಕಿ.",
+            "default": "🌾 Crop Fertilizer Management:\n• Recommended NPK per acre: 40-50 kg Nitrogen, 20-25 kg Phosphorus, 20-25 kg Potash.\n• Basal dose: Apply all Phosphorus, 50% Nitrogen, and 50% Potash during final land preparation.\n• Top dressing: Split remaining Nitrogen at active tillering and panicle initiation stages.\n• Apply Zinc Sulphate 10-15 kg/acre to prevent zinc deficiency."
+        },
+        pest: {
+            "Telugu": "🌾 పత్తి పురుగు నివారణ మరియు పిచికారీ సలహా:\n1. పింక్ బాల్ వర్మ్ కదలికను గమనించడానికి ఎకరాకు 5 ఫెరోమోన్ ట్రాప్‌లు పెట్టండి.\n2. ప్రారంభ దశలో 5% వేప విత్తన సారం లేదా వేప నూనె 2 మి.లీ/లీ వాడండి.\n3. పురుగు హద్దు దాటినట్లయితే: ఎమామెక్టిన్ బెంజోయేట్ 5% SG @ 80-100 గ్రా/ఎకరా వాడండి.\n⚠️ వర్షం ఉన్నప్పుడు లేదా గాలి వేగంగా ఉన్నప్పుడు పిచికారీ చేయకండి.",
+            "Hindi": "🌾 कपास कीट नियंत्रण एवं छिड़काव सलाह:\n1. गुलाबी बोलवर्म की निगरानी के लिए प्रति एकड़ 5 फेरोमोन ट्रैप लगाएं.\n2. प्रारंभिक अवस्था में 5% नीम बीज अर्क या नीम तेल 2 मिली/लीटर का उपयोग करें.\n3. यदि कीट सीमा से अधिक हो: इमामेक्टिन बेंजोएट 5% SG @ 80-100 ग्राम/एकड़ का छिड़काव करें.\n⚠️ बारिश या तेज हवा में छिड़काव न करें। मास्क और दस्ताने पहनें.",
+            "Tamil": "🌾 பருத்தி பூச்சி கட்டுப்பாடு மற்றும் தெளிப்பு ஆலோசனை:\n1. இளஞ்சிவப்பு காய் புழு கண்காணிப்புக்கு ஏக்கருக்கு 5 பெரோமோன் கவர்ச்சி பொறிகள் வைக்கவும்.\n2. ஆரம்ப தாக்குதலில் 5% வேப்பம் கொட்டை சாறு அல்லது வேப்பெண்ணெய் 2 மிலி/லிட்டர் தெளிக்கவும்.\n3. பூச்சி அளவு அதிகமானால்: எமாமெக்டின் பென்சோயேட் 5% SG @ 80-100 கிராம்/ஏக்கர் தெளிக்கவும்.\n⚠️ மழை அல்லது காற்று அதிகமாக இருக்கும்போது தெளிக்காதீர்கள்.",
+            "Kannada": "🌾 ಹತ್ತಿ ಕೀಟ ನಿಯಂತ್ರಣ ಮತ್ತು ಸಿಂಪಡಣೆ ಸಲಹೆ:\n1. ಗುಲಾಬಿ ಕಾಯಿಕೊರಕ ಚಟುವಟಿಕೆ ಮೇಲ್ವಿಚಾರಣೆಗೆ ಎಕರೆಗೆ 5 ಫೆರೋಮೋನ್ ಬಲೆ ಇಡಿ.\n2. ಆರಂಭಿಕ ಹಂತದಲ್ಲಿ 5% ಬೇವಿನ ಬೀಜ ಸಾರ ಅಥವಾ ಬೇವಿನ ಎಣ್ಣೆ 2 ಮಿಲಿ/ಲೀ ಬಳಸಿ.\n3. ಕೀಟ ಮಿತಿ ಮೀರಿದರೆ: ಎಮಾಮೆಕ್ಟಿನ್ ಬೆಂಜೋಯೇಟ್ 5% SG @ 80-100 ಗ್ರಾಂ/ಎಕರೆ ಸಿಂಪಡಿಸಿ.\n⚠️ ಮಳೆ ಅಥವಾ ತೇವ ಗಾಳಿಯಲ್ಲಿ ಸಿಂಪಡಣೆ ಮಾಡಬೇಡಿ.",
+            "default": "🌾 Cotton Pest Control & Spraying Advisory:\n1. Install pheromone traps @ 5/acre to monitor Pink Bollworm activity.\n2. Apply 5% Neem Seed Kernel Extract (NSKE) or Neem oil 2 ml/L during early infestation.\n3. If pest exceeds threshold: Emamectin Benzoate 5% SG @ 80-100 g/acre or Spinetoram in 200L water.\n⚠️ Do not spray when rain is expected or in high winds. Always wear a mask and gloves."
+        },
+        tomato: {
+            "Telugu": "🍅 టమోటా పంట వ్యాధి సలహా:\n• ఆకులు పసుపు రంగుకు మారి గోధుమ వర్ణపు రింగులు వస్తే ఎర్లీ బ్లైట్ (Alternaria solani).\n• చర్య: సోకిన దిగువ ఆకులు తొలగించి, తడి నీరు పిచికారీ మానండి.\n• చికిత్స: మాంకోజెబ్ 75% WP @ 2గ్రా/లీ లేదా అజాక్సిస్ట్రోబిన్ + డిఫెనోకోనజోల్ @ 1 మి.లీ/లీ పిచికారీ చేయండి.\n⚠️ రక్షణ మాస్క్ మరియు గ్లవ్స్ ధరించండి.",
+            "Hindi": "🍅 टमाटर फसल रोग सलाह:\n• पत्तों पर भूरे गोलाकार धब्बे हों तो यह अर्ली ब्लाइट (Alternaria solani) है.\n• क्रिया: संक्रमित नीचे की पत्तियां हटाएं, ऊपर से पानी छिड़काव बंद करें.\n• उपचार: मैंकोजेब 75% WP @ 2 ग्राम/लीटर या एजोक्सीस्ट्रोबिन + डाइफेनोकोनाजोल @ 1 मिली/लीटर छिड़कें.\n⚠️ सुरक्षात्मक मास्क और दस्ताने पहनें.",
+            "Tamil": "🍅 தக்காளி பயிர் நோய் ஆலோசனை:\n• இலைகளில் பழுப்பு நிற வட்ட வடிவ புள்ளிகள் ஆர்லி ப்ளைட் (Alternaria solani) நோயை காட்டுகின்றன.\n• நடவடிக்கை: பாதிக்கப்பட்ட கீழ் இலைகளை அகற்றி, மேலே நீர் தெளிப்பை தவிர்க்கவும்.\n• சிகிச்சை: மாங்கோசெப் 75% WP @ 2 கிராம்/லிட்டர் அல்லது அசோக்சிஸ்ட்ரோபின் + டிஃபெனோகோனசோல் @ 1 மிலி/லிட்டர் தெளிக்கவும்.\n⚠️ முகமூடி மற்றும் கையுறை அணியவும்.",
+            "Kannada": "🍅 ಟೊಮ್ಯಾಟೊ ಬೆಳೆ ರೋಗ ಸಲಹೆ:\n• ಎಲೆಗಳಲ್ಲಿ ಕಂದು ಗೋಲಾಕಾರ ಉಂಗುರಗಳಿದ್ದರೆ ಅದು ಎರ್ಲಿ ಬ್ಲೈಟ್ (Alternaria solani).\n• ಕ್ರಮ: ಸೋಂಕಿತ ಕೆಳ ಎಲೆಗಳನ್ನು ತೆಗೆದು, ತಲೆಯ ಮೇಲಿನ ನೀರಾವರಿ ಬಿಡಿ.\n• ಚಿಕಿತ್ಸೆ: ಮಾಂಕೋಜೆಬ್ 75% WP @ 2 ಗ್ರಾಂ/ಲೀ ಅಥವಾ ಅಜಾಕ್ಸಿಸ್ಟ್ರೋಬಿನ್ + ಡಿಫೆನೋಕೋನಜೋಲ್ @ 1 ಮಿಲಿ/ಲೀ ಸಿಂಪಡಿಸಿ.\n⚠️ ಮಾಸ್ಕ್ ಮತ್ತು ಕೈಚೀಲ ತೊಡಿ.",
+            "default": "🍅 Tomato Crop Disease Advisory:\n• Leaf yellowing with brown concentric rings indicates Early Blight (Alternaria solani).\n• Recommended Action: Remove infected bottom foliage, avoid overhead sprinkler watering, and maintain airflow.\n• Safe Treatment: Spray Mancozeb 75% WP @ 2g/L or Azoxystrobin + Difenoconazole @ 1ml/L.\n⚠️ Wear protective mask and gloves. Respect 5-day pre-harvest interval."
+        },
+        scheme: {
+            "Telugu": "🏛️ రైతులకు ప్రధాన ప్రభుత్వ పథకాలు:\n1. PM-KISAN: సంవత్సరానికి ₹6,000 నేరుగా 3 వాయిదాలలో.\n2. PMFBY (పంట బీమా): తక్కువ ప్రీమియంతో పంట నష్టానికి భీమా (హెల్ప్‌లైన్: 14447).\n3. కిసాన్ క్రెడిట్ కార్డ్ (KCC): 4% వడ్డీకి ₹3 లక్షల వరకు రుణం.\n📞 కిసాన్ కాల్ సెంటర్‌కు 1800-180-1551 కి ఉచితంగా కాల్ చేయండి.",
+            "Hindi": "🏛️ किसानों के लिए प्रमुख सरकारी योजनाएं:\n1. PM-KISAN: ₹6,000/वर्ष सीधे 3 किश्तों में.\n2. PMFBY (फसल बीमा): कम प्रीमियम पर फसल नुकसान का बीमा (हेल्पलाइन: 14447).\n3. किसान क्रेडिट कार्ड (KCC): 4% ब्याज पर ₹3 लाख तक कृषि ऋण.\n📞 किसान कॉल सेंटर पर 1800-180-1551 (टोल-फ्री) पर कॉल करें.",
+            "Tamil": "🏛️ விவசாயிகளுக்கான முக்கிய அரசு திட்டங்கள்:\n1. PM-KISAN: ஆண்டுக்கு ₹6,000 நேரடியாக 3 தவணைகளில்.\n2. PMFBY (பயிர் காப்பீடு): குறைந்த பிரீமியத்தில் பயிர் இழப்பு காப்பீடு (உதவி எண்: 14447).\n3. கிசான் கிரெடிட் கார்டு (KCC): 4% வட்டியில் ₹3 லட்சம் வரை கடன்.\n📞 கிசான் கால் சென்டர் 1800-180-1551 (இலவசம்) எண்ணை அழைக்கவும்.",
+            "Kannada": "🏛️ ರೈತರಿಗಾಗಿ ಪ್ರಮುಖ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು:\n1. PM-KISAN: ₹6,000/ವರ್ಷ ನೇರವಾಗಿ 3 ಕಂತುಗಳಲ್ಲಿ.\n2. PMFBY (ಬೆಳೆ ವಿಮೆ): ಕಡಿಮೆ ಪ್ರೀಮಿಯಂನಲ್ಲಿ ಬೆಳೆ ನಷ್ಟ ಭರಿಸುವ ವಿಮೆ (ಸಹಾಯವಾಣಿ: 14447).\n3. ಕಿಸಾನ್ ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ (KCC): 4% ಬಡ್ಡಿಗೆ ₹3 ಲಕ್ಷದವರೆಗೆ ಸಾಲ.\n📞 ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ 1800-180-1551 (ಟೋಲ್-ಫ್ರೀ) ಗೆ ಕರೆ ಮಾಡಿ.",
+            "default": "🏛️ Major Government Schemes for Farmers:\n1. PM-KISAN: ₹6,000/year direct financial support in 3 equal installments.\n2. PMFBY (Crop Insurance): High-subsidy crop loss coverage (Helpline: 14447).\n3. Kisan Credit Card (KCC): Subsidized farm credit up to ₹3 Lakhs at 4% interest.\n📞 Contact Kisan Call Centre toll-free at 1800-180-1551 for application support."
+        },
+        helpline: {
+            "Telugu": "📞 అధికారిక రైతు హెల్ప్‌లైన్‌లు:\n• కిసాన్ కాల్ సెంటర్ (KCC): 1800-180-1551 (ఉచితం, ఉదయం 6 నుండి రాత్రి 10 వరకు, అన్ని భాషలలో)\n• PMFBY పంట బీమా హెల్ప్‌లైన్: 14447 (24x7)\n• PM-KISAN హెల్ప్‌డెస్క్: 155261 / 011-24300606",
+            "Hindi": "📞 आधिकारिक किसान हेल्पलाइन:\n• किसान कॉल सेंटर (KCC): 1800-180-1551 (टोल-फ्री, सुबह 6 से रात 10 बजे, सभी भाषाओं में)\n• PMFBY फसल बीमा हेल्पलाइन: 14447 (24x7)\n• PM-KISAN हेल्पडेस्क: 155261 / 011-24300606",
+            "Tamil": "📞 அதிகாரப்பூர்வ விவசாய உதவி எண்கள்:\n• கிசான் கால் சென்டர் (KCC): 1800-180-1551 (இலவசம், காலை 6 முதல் இரவு 10 வரை, அனைத்து மொழிகளிலும்)\n• PMFBY பயிர் காப்பீடு உதவி எண்: 14447 (24x7)\n• PM-KISAN உதவி மேசை: 155261 / 011-24300606",
+            "Kannada": "📞 ಅಧಿಕೃತ ರೈತ ಸಹಾಯವಾಣಿಗಳು:\n• ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ (KCC): 1800-180-1551 (ಟೋಲ್-ಫ್ರೀ, ಬೆಳಿಗ್ಗೆ 6 ರಿಂದ ರಾತ್ರಿ 10, ಎಲ್ಲಾ ಭಾಷೆಗಳಲ್ಲಿ)\n• PMFBY ಬೆಳೆ ವಿಮೆ ಸಹಾಯವಾಣಿ: 14447 (24x7)\n• PM-KISAN ಹೆಲ್ಪ್‌ಡೆಸ್ಕ್: 155261 / 011-24300606",
+            "default": "📞 Official Farmer Helplines:\n• Kisan Call Centre (KCC): 1800-180-1551 (Toll-Free, 6:00 AM to 10:00 PM, all Indian languages)\n• PMFBY Crop Insurance Helpline: 14447 (24x7)\n• PM-KISAN Helpdesk: 155261 / 011-24300606"
         }
+    };
+
+    // Helper to pick the right language translation (falls back to "default")
+    function pickLang(topic) {
+        return OFFLINE_ANSWERS[topic][language] || OFFLINE_ANSWERS[topic]["default"];
     }
 
-    if (language === "Telugu") {
-        return "🟢 ఆఫ్‌లైన్ సలహా: పంటను క్రమం తప్పకుండా పరిశీలించండి, నేల తేమను బట్టి మాత్రమే నీరు పెట్టండి మరియు తగినంత వేప నూనెను ముందస్తుగా వాడండి. వివరణాత్మక సలహా కోసం కిసాన్ కాల్ సెంటర్ 1800-180-1551 ను సంప్రదించండి.";
-    } else if (language === "Hindi") {
-        return "🟢 ऑफलाइन सलाह: फसल का नियमित निरीक्षण करें, केवल जरूरत पड़ने पर ही सिंचाई करें और संतुलित खाद डालें। सहायता के लिए किसान कॉल सेंटर 1800-180-1551 पर कॉल करें।";
-    }
+    // Match keywords and return a language-appropriate response
+    const fertKeywords = ["వరి", "rice", "paddy", "ఎరువు", "fertilizer", "dap", "urea", "खाद", "உரம்", "ಗೊಬ್ಬರ", "সার"];
+    const pestKeywords = ["పత్తి", "cotton", "పురుగు", "pest", "పిచికారీ", "spray", "कीट", "छिड़काव", "பூச்சி", "ಕೀಟ"];
+    const tomatoKeywords = ["tomato", "టమోటా", "yellow", "blight", "spot", "ఆకుమచ్చ", "टमाटर", "पीला", "धब्बा", "இலை"];
+    const schemeKeywords = ["scheme", "పథకం", "pm-kisan", "pmfby", "యోజన", "योजना", "திட்டம்", "ಯೋಜನೆ", "প্রকল্প"];
+    const helplineKeywords = ["helpline", "నంబర్", "హెల్ప్‌లైన్", "contact", "phone", "number", "नंबर", "உதவி", "ಸಹಾಯವಾಣಿ"];
 
-    return "🟢 Offline Mode: Inspect your crop foliage regularly, ensure proper drainage, avoid over-fertilizing with urea, and consult your local KVK or Kisan Call Centre (1800-180-1551) for expert help.";
+    if (fertKeywords.some(k => qLower.includes(k.toLowerCase()))) return pickLang("fertilizer");
+    if (pestKeywords.some(k => qLower.includes(k.toLowerCase()))) return pickLang("pest");
+    if (tomatoKeywords.some(k => qLower.includes(k.toLowerCase()))) return pickLang("tomato");
+    if (schemeKeywords.some(k => qLower.includes(k.toLowerCase()))) return pickLang("scheme");
+    if (helplineKeywords.some(k => qLower.includes(k.toLowerCase()))) return pickLang("helpline");
+
+    // Generic fallback — all supported languages
+    const genericFallback = {
+        "Telugu": "🟢 ఆఫ్‌లైన్ సలహా: పంటను క్రమం తప్పకుండా పరిశీలించండి, నేల తేమను బట్టి మాత్రమే నీరు పెట్టండి మరియు తగినంత వేప నూనెను ముందస్తుగా వాడండి. వివరణాత్మక సలహా కోసం కిసాన్ కాల్ సెంటర్ 1800-180-1551 ను సంప్రదించండి.",
+        "Hindi": "🟢 ऑफलाइन सलाह: फसल का नियमित निरीक्षण करें, केवल जरूरत पड़ने पर ही सिंचाई करें और संतुलित खाद डालें। सहायता के लिए किसान कॉल सेंटर 1800-180-1551 पर कॉल करें।",
+        "Tamil": "🟢 ஆஃப்லைன் ஆலோசனை: பயிரை தொடர்ந்து கவனியுங்கள், மண் ஈரப்பதத்தை பொறுத்து மட்டும் நீர் பாய்ச்சுங்கள் மற்றும் வேப்பெண்ணெய் பயன்படுத்துங்கள். விரிவான உதவிக்கு கிசான் கால் சென்டர் 1800-180-1551 அழைக்கவும்.",
+        "Kannada": "🟢 ಆಫ್‌ಲೈನ್ ಸಲಹೆ: ಬೆಳೆಯನ್ನು ನಿಯಮಿತವಾಗಿ ಪರೀಕ್ಷಿಸಿ, ಮಣ್ಣಿನ ತೇವಾಂಶಕ್ಕೆ ಅನುಗುಣವಾಗಿ ನೀರು ನೀಡಿ, ಮತ್ತು ಬೇವಿನ ಎಣ್ಣೆ ಬಳಸಿ. ಹೆಚ್ಚಿನ ಸಹಾಯಕ್ಕೆ ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ 1800-180-1551 ಗೆ ಕರೆ ಮಾಡಿ.",
+        "Marathi": "🟢 ऑफलाइन सल्ला: पिकाची नियमित पाहणी करा, जमिनीच्या ओलाव्यानुसारच पाणी द्या आणि कडुनिंबाचे तेल वापरा. तपशीलवार मदतीसाठी किसान कॉल सेंटर 1800-180-1551 वर संपर्क करा.",
+        "Bengali": "🟢 অফলাইন পরামর্শ: নিয়মিত ফসল পরীক্ষা করুন, মাটির আর্দ্রতা অনুযায়ী সেচ দিন এবং নিম তেল ব্যবহার করুন। বিস্তারিত সাহায্যের জন্য কিসান কল সেন্টার 1800-180-1551 তে কল করুন।",
+        "Gujarati": "🟢 ઑફલાઇન સલાહ: પાકનું નિયમિત નિરીક્ષણ કરો, જમીનની ભેજ જોઈને જ સિંચાઈ કરો અને લીંબોળીનું તેલ વાપરો. વધુ મદદ માટે કિસાન કૉલ સેન્ટર 1800-180-1551 ઉપર ફોન કરો.",
+        "Punjabi": "🟢 ਆਫ਼ਲਾਈਨ ਸਲਾਹ: ਫ਼ਸਲ ਦੀ ਨਿਯਮਿਤ ਜਾਂਚ ਕਰੋ, ਜ਼ਮੀਨ ਦੀ ਨਮੀ ਦੇ ਆਧਾਰ 'ਤੇ ਸਿੰਚਾਈ ਕਰੋ ਅਤੇ ਨਿੰਮ ਤੇਲ ਵਰਤੋ। ਵੱਧ ਜਾਣਕਾਰੀ ਲਈ ਕਿਸਾਨ ਕਾਲ ਸੈਂਟਰ 1800-180-1551 ਤੇ ਕਾਲ ਕਰੋ।",
+        "Malayalam": "🟢 ഓഫ്‌ലൈൻ ഉപദേശം: വിളകൾ നിരന്തരം ശ്രദ്ധിക്കുക, മണ്ണിന്റെ ഈർപ്പമനുസരിച്ച് മാത്രം ജലസേചനം നടത്തുക, വേപ്പെണ്ണ ഉപയോഗിക്കുക. കൂടുതൽ സഹായത്തിനു കിസാൻ കോൾ സെന്റർ 1800-180-1551 ൽ വിളിക്കുക.",
+        "default": "🟢 Offline Mode: Inspect your crop foliage regularly, ensure proper drainage, avoid over-fertilizing with urea, and consult your local KVK or Kisan Call Centre (1800-180-1551) for expert help."
+    };
+
+    return genericFallback[language] || genericFallback["default"];
 }
 
 // ------------------------------------------------------------------------------
